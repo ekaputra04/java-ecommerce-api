@@ -1,17 +1,19 @@
-import java.io.BufferedReader;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.sql.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
 
-public class MyHandler implements HttpHandler{
-    private static final String DB_URL = "jdbc:sqlite:/C/Sqlite/db_ecommerce";
-    
+public class MyHandler implements HttpHandler {
+    private static final String DB_URL = "jdbc:sqlite:/C/Sqlite/ecommerce.db";
+
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String method = exchange.getRequestMethod();
@@ -20,7 +22,13 @@ public class MyHandler implements HttpHandler{
 
         try {
             if (method.equalsIgnoreCase("GET")) {
-                response = handleGetRequest();
+                String[] parts = exchange.getRequestURI().getPath().split("/");
+                if (parts.length >= 2) {
+                    String tableName = parts[parts.length - 1];
+                    response = handleGetRequest(tableName);
+                } else {
+                    statusCode = 400; // Bad Request
+                }
             } else if (method.equalsIgnoreCase("POST")) {
                 response = handlePostRequest(exchange);
             } else if (method.equalsIgnoreCase("PUT")) {
@@ -35,36 +43,66 @@ public class MyHandler implements HttpHandler{
             statusCode = 500; // Internal Server Error
         }
 
-        exchange.sendResponseHeaders(statusCode, response.length());
+        exchange.getResponseHeaders().set("Content-Type", "application/json");
+        exchange.sendResponseHeaders(statusCode, response.getBytes().length);
         OutputStream outputStream = exchange.getResponseBody();
         outputStream.write(response.getBytes());
         outputStream.close();
     }
 
-    private String handleGetRequest() throws SQLException {
-        String response = "";
+    private String handleGetRequest(String tableName) throws SQLException {
         Connection connection = null;
-        PreparedStatement statement = null;
+        Statement statement = null;
         ResultSet resultSet = null;
 
         try {
-            connection = DatabaseConnection.getConnection();
-            String query = "SELECT * FROM mytable";
-            statement = connection.prepareStatement(query);
-            resultSet = statement.executeQuery();
+            connection = DriverManager.getConnection(DB_URL);
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("SELECT * FROM " + tableName);
+
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int columnCount = metaData.getColumnCount();
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            StringBuilder jsonBuilder = new StringBuilder();
+            jsonBuilder.append("[");
+            boolean firstRow = true;
 
             while (resultSet.next()) {
-                String data = resultSet.getString("column_name");
-                response += data + "\n";
+                if (!firstRow) {
+                    jsonBuilder.append(",");
+                }
+                jsonBuilder.append("{");
+                for (int i = 1; i <= columnCount; i++) {
+                    String columnName = metaData.getColumnName(i);
+                    String columnValue = resultSet.getString(i);
+                    jsonBuilder.append("\"").append(columnName).append("\":\"").append(columnValue).append("\"");
+                    if (i < columnCount) {
+                        jsonBuilder.append(",");
+                    }
+                }
+                jsonBuilder.append("}");
+                firstRow = false;
             }
-        } finally {
-            closeResources(resultSet, statement, connection);
-        }
 
-        return response;
+            jsonBuilder.append("]");
+            return jsonBuilder.toString();
+        } finally {
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (statement != null) {
+                statement.close();
+            }
+            if (connection != null) {
+                connection.close();
+            }
+        }
     }
 
-    private String handlePostRequest(HttpExchange exchange) throws SQLException, IOException {
+
+    private String handlePostRequest(HttpExchange exchange) throws SQLException,
+            IOException {
         String response = "";
         Connection connection = null;
         PreparedStatement statement = null;
@@ -90,7 +128,8 @@ public class MyHandler implements HttpHandler{
         return response;
     }
 
-    private String handlePutRequest(HttpExchange exchange) throws SQLException, IOException {
+    private String handlePutRequest(HttpExchange exchange) throws SQLException,
+            IOException {
         String response = "";
         Connection connection = null;
         PreparedStatement statement = null;
@@ -104,7 +143,7 @@ public class MyHandler implements HttpHandler{
             // Membaca data dari body permintaan
             BufferedReader reader = new BufferedReader(new InputStreamReader(exchange.getRequestBody()));
             String requestData = reader.readLine();
-    
+
             // Memperbarui data dalam database
             String query = "UPDATE mytable SET column_name = ? WHERE id = ?";
             statement = connection.prepareStatement(query);
@@ -145,7 +184,8 @@ public class MyHandler implements HttpHandler{
         return response;
     }
 
-    private void closeResources(ResultSet resultSet, PreparedStatement statement, Connection connection) {
+    private void closeResources(ResultSet resultSet, PreparedStatement statement,
+            Connection connection) {
         if (resultSet != null) {
             try {
                 resultSet.close();
