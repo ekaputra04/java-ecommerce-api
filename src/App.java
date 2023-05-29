@@ -7,5 +7,6 @@ public class App {
         server.createContext("/", new MyHandler()); // Menetapkan handler ke path tertentu
         server.setExecutor(null); // Menggunakan executor default
         server.start(); // Memulai server
+        System.out.println("Server started on port 1087");
     }
 }

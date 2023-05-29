@@ -1,34 +1,35 @@
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import com.fasterxml.jackson.databind.ObjectMapper;
+// import com.sun.net.httpserver.HttpServer;
+// import java.net.InetSocketAddress;
+// import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.sql.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+// import org.json.JSONArray;
+// import org.json.JSONObject;
 
 public class MyHandler implements HttpHandler {
-    private static final String DB_URL = "jdbc:sqlite:/C/Sqlite/ecommerce.db";
+
+    public static String method;
+    public static String path;
+    public static String query;
+    public static String response;
+    public static int statusCode = 200;
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
-        String method = exchange.getRequestMethod();
-        String response = "";
-        int statusCode = 200;
 
         try {
+            // Mendapatkan method dari permintaan
+            method = exchange.getRequestMethod();
+            // Mendapatkan query dari request
+            query = exchange.getRequestURI().getQuery();
+
             if (method.equalsIgnoreCase("GET")) {
-                String[] parts = exchange.getRequestURI().getPath().split("/");
-                if (parts.length >= 2) {
-                    String tableName = parts[parts.length - 1];
-                    response = handleGetRequest(tableName);
-                } else {
-                    statusCode = 400; // Bad Request
-                }
+                response = HandlerGetRequest.handleGetRequest(exchange);
             } else if (method.equalsIgnoreCase("POST")) {
                 response = handlePostRequest(exchange);
             } else if (method.equalsIgnoreCase("PUT")) {
@@ -47,59 +48,9 @@ public class MyHandler implements HttpHandler {
         exchange.sendResponseHeaders(statusCode, response.getBytes().length);
         OutputStream outputStream = exchange.getResponseBody();
         outputStream.write(response.getBytes());
+        outputStream.flush();
         outputStream.close();
     }
-
-    private String handleGetRequest(String tableName) throws SQLException {
-        Connection connection = null;
-        Statement statement = null;
-        ResultSet resultSet = null;
-
-        try {
-            connection = DriverManager.getConnection(DB_URL);
-            statement = connection.createStatement();
-            resultSet = statement.executeQuery("SELECT * FROM " + tableName);
-
-            ResultSetMetaData metaData = resultSet.getMetaData();
-            int columnCount = metaData.getColumnCount();
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            StringBuilder jsonBuilder = new StringBuilder();
-            jsonBuilder.append("[");
-            boolean firstRow = true;
-
-            while (resultSet.next()) {
-                if (!firstRow) {
-                    jsonBuilder.append(",");
-                }
-                jsonBuilder.append("{");
-                for (int i = 1; i <= columnCount; i++) {
-                    String columnName = metaData.getColumnName(i);
-                    String columnValue = resultSet.getString(i);
-                    jsonBuilder.append("\"").append(columnName).append("\":\"").append(columnValue).append("\"");
-                    if (i < columnCount) {
-                        jsonBuilder.append(",");
-                    }
-                }
-                jsonBuilder.append("}");
-                firstRow = false;
-            }
-
-            jsonBuilder.append("]");
-            return jsonBuilder.toString();
-        } finally {
-            if (resultSet != null) {
-                resultSet.close();
-            }
-            if (statement != null) {
-                statement.close();
-            }
-            if (connection != null) {
-                connection.close();
-            }
-        }
-    }
-
 
     private String handlePostRequest(HttpExchange exchange) throws SQLException,
             IOException {
