@@ -1,20 +1,36 @@
+import org.json.JSONObject;
+
 public class Reviews {
-    private int order;
+    private int reviewId;
+    private int orderId;
     private int star;
     private String description;
 
-    public Reviews(int order, int star, String description) {
-        this.order = order;
+    public Reviews() {
+        
+    }
+
+    public Reviews(int reviewId, int orderId, int star, String description) {
+        this.reviewId = reviewId;
+        this.orderId = orderId;
         this.star = star;
         this.description = description;
     }
 
-    public int getOrder() {
-        return order;
+    public int getReviewId() {
+        return reviewId;
     }
 
-    public void setOrder(int order) {
-        this.order = order;
+    public void setReviewId(int reviewId) {
+        this.reviewId = reviewId;
+    }
+
+    public int getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
     }
 
     public int getStar() {
@@ -31,5 +47,14 @@ public class Reviews {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public JSONObject toJsonObject() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("reviewId", reviewId);
+        jsonObject.put("orderId", orderId);
+        jsonObject.put("star", star);
+        jsonObject.put("description", description);
+        return jsonObject;
     }
 }

@@ -1,22 +1,28 @@
+import org.json.JSONObject;
+
 public class OrderDetails {
-    private int order;
+    private int orderId;
     private int product;
     private int quantity;
     private int price;
 
-    public OrderDetails(int order, int product, int quantity, int price){
-        this.order = order;
+    public OrderDetails() {
+
+    }
+
+    public OrderDetails(int orderId, int product, int quantity, int price) {
+        this.orderId = orderId;
         this.product = product;
-        this.quantity =quantity;
+        this.quantity = quantity;
         this.price = price;
     }
 
-    public int getOrder() {
-        return order;
+    public int getOrderId() {
+        return orderId;
     }
 
-    public void setOrder(int order) {
-        this.order = order;
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
     }
 
     public int getProduct() {
@@ -41,5 +47,14 @@ public class OrderDetails {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public JSONObject toJsonObject() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("orderId", orderId);
+        jsonObject.put("product", product);
+        jsonObject.put("quantity", quantity);
+        jsonObject.put("price", price);
+        return jsonObject;
     }
 }

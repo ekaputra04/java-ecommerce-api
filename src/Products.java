@@ -1,3 +1,5 @@
+import org.json.JSONObject;
+
 public class Products {
     private int id;
     private int seller;
@@ -5,6 +7,10 @@ public class Products {
     private String description;
     private String price;
     private int stock;
+
+    public Products(){
+
+    }
 
     public Products (int id, int seller, String title, String description, String price, int stock){
         this.id = id;
@@ -61,5 +67,16 @@ public class Products {
     
     public void setStock(int stock) {
         this.stock = stock;
+    }
+
+    public JSONObject toJsonObject() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", id);
+        jsonObject.put("seller", seller);
+        jsonObject.put("title", title);
+        jsonObject.put("description", description);
+        jsonObject.put("price", price);
+        jsonObject.put("stock", stock);
+        return jsonObject;
     }
 }

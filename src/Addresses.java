@@ -1,3 +1,5 @@
+import org.json.JSONObject;
+
 public class Addresses {
     private int users;
     private String type;
@@ -7,7 +9,12 @@ public class Addresses {
     private String province;
     private String postcode;
 
-    public Addresses (int users, String type, String line1, String line2, String city, String province, String postcode){
+    public Addresses() {
+
+    }
+
+    public Addresses(int users, String type, String line1, String line2, String city, String province,
+            String postcode) {
         this.users = users;
         this.type = type;
         this.line1 = line1;
@@ -68,8 +75,20 @@ public class Addresses {
     public String getPostcode() {
         return postcode;
     }
-    
+
     public void setPostcode(String postcode) {
         this.postcode = postcode;
-    } 
+    }
+
+    public JSONObject toJsonObject() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("users", users);
+        jsonObject.put("type", type);
+        jsonObject.put("line1", line1);
+        jsonObject.put("line2", line2);
+        jsonObject.put("city", city);
+        jsonObject.put("province", province);
+        jsonObject.put("postcode", postcode);
+        return jsonObject;
+    }
 }

@@ -1,3 +1,5 @@
+import org.json.JSONObject;
+
 public class Users {
     private int id;
     private String firstName;
@@ -5,6 +7,10 @@ public class Users {
     private String email;
     private String phoneNumber;
     private String type;
+
+    public Users() {
+
+    }
 
     public Users(int id, String firstName, String lastName, String email, String phoneNumber, String type) {
         this.id = id;
@@ -30,12 +36,12 @@ public class Users {
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
-    
+
     public String getLastName() {
         return lastName;
     }
 
-    public void setLast_name(String lastName) {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
@@ -58,8 +64,19 @@ public class Users {
     public String getType() {
         return type;
     }
-    
+
     public void setType(String type) {
         this.type = type;
+    }
+
+    public JSONObject toJsonObject() {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", id);
+        jsonObject.put("firstName", firstName);
+        jsonObject.put("lastName", lastName);
+        jsonObject.put("email", email);
+        jsonObject.put("phoneNumber", phoneNumber);
+        jsonObject.put("type", type);
+        return jsonObject;
     }
 }
