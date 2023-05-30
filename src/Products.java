@@ -80,4 +80,34 @@ public class Products {
         jsonObject.put("stock", stock);
         return jsonObject;
     }
+
+    public int parseProductsJSON(String json){
+        try {
+            JSONObject obj = new JSONObject(json);
+            seller = obj.getInt("seller");
+            title = obj.getString("title");
+            description = obj.getString("description");
+            price = obj.getString("price");
+            stock = obj.getInt("stock");
+        }catch (Exception e){
+            return 1;
+        }
+        return 0;
+    }
+
+    public void insertProduct(){
+        try{
+            Connection conn = DatabaseConnection.getConnection();
+            String sql = "INSERT INTO users (seller, title, description, price, stock) VALUES (?,?,?,?,?)";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, seller);
+            pstmt.setString(2, title);
+            pstmt.setString(3, description);
+            pstmt.setString(3, price);
+            pstmt.setInt(3, stock);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }
