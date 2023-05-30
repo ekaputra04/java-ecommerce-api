@@ -10,7 +10,6 @@ import java.sql.*;
  * Kelas ini menyediakan logika untuk memproses permintaan HTTP yang masuk dan
  * menghasilkan respons yang sesuai.
  */
-
 public class MyHandler implements HttpHandler {
     private static String method;
     private static String response = "";
