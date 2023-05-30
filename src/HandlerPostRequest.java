@@ -35,9 +35,11 @@ public class HandlerPostRequest {
         BufferedReader br = new BufferedReader(isr);
         int i;
         StringBuilder buf = new StringBuilder();
+
         while ((i = br.read()) != -1) {
             buf.append((char) i);
         }
+        
         br.close();
         isr.close();
         String json = buf.toString();

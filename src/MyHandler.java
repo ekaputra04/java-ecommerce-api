@@ -40,7 +40,7 @@ public class MyHandler implements HttpHandler {
             } else if (method.equalsIgnoreCase("POST")) {
                 HandlerPostRequest.handlePostRequest(exchange);
             } else if (method.equalsIgnoreCase("PUT")) {
-                response = handlePutRequest(exchange);
+                HandlerPutRequest.handlePutRequest(exchange);
             } else if (method.equalsIgnoreCase("DELETE")) {
                 response = handleDeleteRequest(exchange);
             } else {
@@ -57,37 +57,6 @@ public class MyHandler implements HttpHandler {
         // outputStream.write(response.getBytes());
         // outputStream.flush();
         // outputStream.close();
-    }
-
-    private String handlePutRequest(HttpExchange exchange) throws SQLException,
-            IOException {
-        String response = "";
-        Connection connection = null;
-        PreparedStatement statement = null;
-
-        try {
-            connection = DatabaseConnection.getConnection();
-
-            // Mendapatkan ID data dari path permintaan
-            String id = exchange.getRequestURI().getPath().split("/")[2];
-
-            // Membaca data dari body permintaan
-            BufferedReader reader = new BufferedReader(new InputStreamReader(exchange.getRequestBody()));
-            String requestData = reader.readLine();
-
-            // Memperbarui data dalam database
-            String query = "UPDATE mytable SET column_name = ? WHERE id = ?";
-            statement = connection.prepareStatement(query);
-            statement.setString(1, requestData);
-            statement.setString(2, id);
-            statement.executeUpdate();
-
-            response = "Data updated successfully";
-        } finally {
-            closeResources(null, statement, connection);
-        }
-
-        return response;
     }
 
     private String handleDeleteRequest(HttpExchange exchange) throws SQLException {
