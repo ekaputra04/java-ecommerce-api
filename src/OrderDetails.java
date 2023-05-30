@@ -1,4 +1,7 @@
 import org.json.JSONObject;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class OrderDetails {
     private int orderId;
@@ -56,5 +59,33 @@ public class OrderDetails {
         jsonObject.put("quantity", quantity);
         jsonObject.put("price", price);
         return jsonObject;
+    }
+
+    public int parseOrderDetailsJSON(String json){
+        try {
+            JSONObject obj = new JSONObject(json);
+            orderId = obj.getInt("order_id");
+            product = obj.getInt("product");
+            quantity = obj.getInt("quantity");
+            price = obj.getInt("price");
+        }catch (Exception e){
+            return 1;
+        }
+        return 0;
+    }
+
+    public void insertOrderDetails(){
+        try{
+            Connection conn = DatabaseConnection.getConnection();
+            String sql = "INSERT INTO users (order_id, product, quantity, price) VALUES (?,?,?,?)";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, orderId);
+            pstmt.setInt(2, product);
+            pstmt.setInt(3, quantity);
+            pstmt.setInt(4, price);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
