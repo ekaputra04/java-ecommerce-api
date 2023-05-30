@@ -1,4 +1,7 @@
 import org.json.JSONObject;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class Addresses {
     private int users;
@@ -90,5 +93,52 @@ public class Addresses {
         jsonObject.put("province", province);
         jsonObject.put("postcode", postcode);
         return jsonObject;
+    }
+
+    public int parseJson(String json){
+        try {
+            JSONObject obj = new JSONObject(json);
+            type = obj.getString("type");
+            line1 = obj.getString("line1");
+            line2 = obj.getString("line2");
+            province = obj.getString("province");
+            city = obj.getString("city");
+            postcode = obj.getString("postcode");
+        }catch (Exception e){
+            return 1;
+        }
+        return 0;
+    }
+
+    public int parseAddressesJSON(String json){
+        try {
+            JSONObject obj = new JSONObject(json);
+            type = obj.getString("tipe");
+            line1 = obj.getString("line1");
+            line2 = obj.getString("line2");
+            city = obj.getString("city");
+            province = obj.getString("province");
+            postcode = obj.getString("postcode");
+        }catch (Exception e){
+            return 1;
+        }
+        return 0;
+    }
+
+    public void insertAddress(){
+        try{
+            Connection conn = DatabaseConnection.getConnection();
+            String sql = "INSERT INTO users (tipe, line1, line2, city, province, postcode) VALUES (?,?,?,?,?,?)";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, type);
+            pstmt.setString(2, line1);
+            pstmt.setString(3, line2);
+            pstmt.setString(4, city);
+            pstmt.setString(5, province);
+            pstmt.setString(6, postcode);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }        
     }
 }
