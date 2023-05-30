@@ -12,9 +12,7 @@ public class Addresses {
     private String province;
     private String postcode;
 
-    public Addresses() {
-
-    }
+    public Addresses() {}
 
     public Addresses(int users, String type, String line1, String line2, String city, String province,
             String postcode) {

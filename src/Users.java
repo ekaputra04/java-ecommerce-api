@@ -11,9 +11,7 @@ public class Users {
     private String phoneNumber;
     private String type;
 
-    public Users() {
-
-    }
+    public Users() {}
 
     public Users(int id, String firstName, String lastName, String email, String phoneNumber, String type) {
         this.id = id;

@@ -6,9 +6,7 @@ public class Reviews {
     private int star;
     private String description;
 
-    public Reviews() {
-        
-    }
+    public Reviews() {}
 
     public Reviews(int reviewId, int orderId, int star, String description) {
         this.reviewId = reviewId;

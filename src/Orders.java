@@ -1,4 +1,7 @@
 import org.json.JSONObject;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class Orders {
     private int id;
@@ -8,9 +11,7 @@ public class Orders {
     private int discount;
     private boolean isPaid;
 
-    public Orders() {
-
-    }
+    public Orders() {}
 
     public Orders(int id, int buyer, int note, int total, int discount, boolean isPaid) {
         this.id = id;
@@ -78,5 +79,35 @@ public class Orders {
         jsonObject.put("discount", discount);
         jsonObject.put("is_paid", isPaid);
         return jsonObject;
+    }
+
+    public int parseOrdersJSON(String json){
+        try {
+            JSONObject obj = new JSONObject(json);
+            buyer = obj.getInt("buyer");
+            note = obj.getInt("note");
+            total = obj.getInt("total");
+            discount = obj.getInt("discount");
+            isPaid = obj.getBoolean("is_paid");
+        }catch (Exception e){
+            return 1;
+        }
+        return 0;
+    }
+
+    public void insertOrder(){
+        try{
+            Connection conn = DatabaseConnection.getConnection();
+            String sql = "INSERT INTO users (buyer, note, total, discount, is_paid) VALUES (?,?,?,?,?)";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, buyer);
+            pstmt.setInt(2, note);
+            pstmt.setInt(3, total);
+            pstmt.setInt(4, discount);
+            pstmt.setBoolean(5, isPaid);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

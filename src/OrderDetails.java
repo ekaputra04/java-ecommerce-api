@@ -9,9 +9,7 @@ public class OrderDetails {
     private int quantity;
     private int price;
 
-    public OrderDetails() {
-
-    }
+    public OrderDetails() {}
 
     public OrderDetails(int orderId, int product, int quantity, int price) {
         this.orderId = orderId;
