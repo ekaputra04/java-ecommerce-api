@@ -90,7 +90,7 @@ public class Products {
             price = obj.getString("price");
             stock = obj.getInt("stock");
         }catch (Exception e){
-            return 1;
+            return 1;            
         }
         return 0;
     }
@@ -98,7 +98,7 @@ public class Products {
     public void insertProduct(){
         try{
             Connection conn = DatabaseConnection.getConnection();
-            String sql = "INSERT INTO users (seller, title, description, price, stock) VALUES (?,?,?,?,?)";
+            String sql = "INSERT INTO products (seller, title, description, price, stock) VALUES (?,?,?,?,?)";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, seller);
             pstmt.setString(2, title);

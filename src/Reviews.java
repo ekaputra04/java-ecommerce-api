@@ -74,7 +74,7 @@ public class Reviews {
     public void insertReview(){
         try{
             Connection conn = DatabaseConnection.getConnection();
-            String sql = "INSERT INTO users (star, description, order_id) VALUES (?,?,?)";
+            String sql = "INSERT INTO reviews (star, description, order_id) VALUES (?,?,?)";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, star);
             pstmt.setString(2, description);

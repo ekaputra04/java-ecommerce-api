@@ -75,7 +75,7 @@ public class OrderDetails {
     public void insertOrderDetails(){
         try{
             Connection conn = DatabaseConnection.getConnection();
-            String sql = "INSERT INTO users (order_id, product, quantity, price) VALUES (?,?,?,?)";
+            String sql = "INSERT INTO order_details (order_id, product, quantity, price) VALUES (?,?,?,?)";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, orderId);
             pstmt.setInt(2, product);

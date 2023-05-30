@@ -98,7 +98,7 @@ public class Orders {
     public void insertOrder(){
         try{
             Connection conn = DatabaseConnection.getConnection();
-            String sql = "INSERT INTO users (buyer, note, total, discount, is_paid) VALUES (?,?,?,?,?)";
+            String sql = "INSERT INTO orders (buyer, note, total, discount, is_paid) VALUES (?,?,?,?,?)";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setInt(1, buyer);
             pstmt.setInt(2, note);

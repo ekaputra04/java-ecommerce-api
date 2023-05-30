@@ -27,7 +27,7 @@ public class MyHandler implements HttpHandler {
             method = exchange.getRequestMethod();
 
             // Mendapatkan query dari request
-            query = exchange.getRequestURI().getQuery();
+            // query = exchange.getRequestURI().getQuery();
 
             if (method.equalsIgnoreCase("GET")) {
                 response = HandlerGetRequest.handleGetRequest(exchange);

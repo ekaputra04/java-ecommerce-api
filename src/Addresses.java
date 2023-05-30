@@ -96,11 +96,11 @@ public class Addresses {
     public int parseJson(String json){
         try {
             JSONObject obj = new JSONObject(json);
-            type = obj.getString("type");
+            type = obj.getString("tipe");
             line1 = obj.getString("line1");
             line2 = obj.getString("line2");
-            province = obj.getString("province");
             city = obj.getString("city");
+            province = obj.getString("province");            
             postcode = obj.getString("postcode");
         }catch (Exception e){
             return 1;
@@ -126,7 +126,7 @@ public class Addresses {
     public void insertAddress(){
         try{
             Connection conn = DatabaseConnection.getConnection();
-            String sql = "INSERT INTO users (tipe, line1, line2, city, province, postcode) VALUES (?,?,?,?,?,?)";
+            String sql = "INSERT INTO addresses (tipe, line1, line2, city, province, postcode) VALUES (?,?,?,?,?,?)";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, type);
             pstmt.setString(2, line1);

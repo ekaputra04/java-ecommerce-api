@@ -7,15 +7,15 @@ import java.io.OutputStream;
 
 public class HandlerPostRequest {
 
-    private static Connection conn;
     private static String path;
+    private static int statusCode;
     private static String response;
     private static String tableName;
     private static String[] pathSegments;
-    private static String query;
 
     public static void handlePostRequest(HttpExchange exchange) throws SQLException,
             IOException {
+
         OutputStream outputStream = exchange.getResponseBody();
 
         // Mendapatkan path dari permintaan
@@ -28,6 +28,7 @@ public class HandlerPostRequest {
             tableName = pathSegments[1];
         } else {
             response = "Invalid path. Please specify a valid table name.";
+            statusCode = 200;
         }
 
         InputStreamReader isr = new InputStreamReader(exchange.getRequestBody(), "utf-8");
@@ -45,18 +46,67 @@ public class HandlerPostRequest {
             Users user = new Users();
             if (user.parseUserJSON(json) != 1) {
                 user.insertUser();
-                response = "Data berhasil dimasukkan";
-                exchange.sendResponseHeaders(200, response.getBytes().length);
-                outputStream.write(response.getBytes());
-                outputStream.flush();
-                outputStream.close();
+                response = "Data has been successfully inserted.";
+                statusCode = 200;                
             } else {
-                response = "Data tidak sesuai";
-                exchange.sendResponseHeaders(400, response.getBytes().length);
-                outputStream.write(response.getBytes());
-                outputStream.flush();
-                outputStream.close();
+                response = "Invalid data.";
+                statusCode = 400;
+            }
+        } else if (tableName.equals("addresses")) {
+            Addresses addresses = new Addresses();
+            if (addresses.parseAddressesJSON(json) != 1) {
+                addresses.insertAddress();
+                response = "Data has been successfully inserted.";
+                statusCode = 200;
+            } else {
+                response = "Invalid data.";
+                statusCode = 400;
+            }
+        } else if (tableName.equals("products")) {
+            Products products = new Products();
+            if (products.parseProductsJSON(json) != 1) {
+                products.insertProduct();
+                response = "Data has been successfully inserted.";
+                statusCode = 200;
+            } else {
+                response = "Invalid data.";
+                statusCode = 400;
+            } 
+        } else if (tableName.equals("orders")) {
+            Orders orders = new Orders();
+            if (orders.parseOrdersJSON(json) != 1) {
+                orders.insertOrder();
+                response = "Data has been successfully inserted.";
+                statusCode = 200;
+            } else {
+                response = "Invalid data.";
+                statusCode = 400;
+            }
+        } else if (tableName.equals("order_details")) {
+            OrderDetails orderDetails = new OrderDetails();
+            if (orderDetails.parseOrderDetailsJSON(json) != 1) {
+                orderDetails.insertOrderDetails();
+                response = "Data has been successfully inserted.";
+                statusCode = 200;
+            } else {
+                response = "Invalid data.";
+                statusCode = 400;
+            } 
+        } else if (tableName.equals("reviews")) {
+            Reviews reviews = new Reviews();
+            if (reviews.parseReviewsJSON(json) != 1) {
+                reviews.insertReview();
+                response = "Data has been successfully inserted.";
+                statusCode = 200;
+            } else {
+                response = "Invalid data.";
+                statusCode = 400;
             }
         }
+
+        exchange.sendResponseHeaders(statusCode, response.getBytes().length);
+        outputStream.write(response.getBytes());
+        outputStream.flush();
+        outputStream.close();
     }
 }
