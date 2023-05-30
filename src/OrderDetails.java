@@ -86,4 +86,19 @@ public class OrderDetails {
             System.out.println(e.getMessage());
         }
     }
+
+    public void updateOrderDetails(String idOrderDetails) {
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            String sql = "UPDATE order_details SET order_id = \"" + orderId +
+                    "\" , product = \"" + product +
+                    "\" , quantity = \"" + quantity +
+                    "\" , price = \"" + price +
+                    "\" WHERE order_id = " + idOrderDetails;
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }
