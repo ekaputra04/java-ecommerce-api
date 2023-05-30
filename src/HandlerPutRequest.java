@@ -96,6 +96,16 @@ public class HandlerPutRequest {
                 response = "Data is not valid.";
                 statusCode = 400;
             }
+        } else if (tableName.equals("reviews")) {
+            Reviews reviews = new Reviews();
+            if (reviews.parseReviewsJSON(json) != 1) {
+                reviews.updateReview(id);
+                response = "Data has been successfully updated.";
+                statusCode = 200;
+            } else {
+                response = "Data is not valid.";
+                statusCode = 400;
+            }
         } 
 
         exchange.sendResponseHeaders(statusCode, response.length());
@@ -104,33 +114,3 @@ public class HandlerPutRequest {
         outputStream.close();
     }
 }
-// String response = "";
-// Connection connection = null;
-// PreparedStatement statement = null;
-
-// try {
-// connection = DatabaseConnection.getConnection();
-
-// // Mendapatkan ID data dari path permintaan
-// String id = exchange.getRequestURI().getPath().split("/")[2];
-
-// // Membaca data dari body permintaan
-// BufferedReader reader = new BufferedReader(new
-// InputStreamReader(exchange.getRequestBody()));
-// String requestData = reader.readLine();
-
-// // Memperbarui data dalam database
-// String query = "UPDATE mytable SET column_name = ? WHERE id = ?";
-// statement = connection.prepareStatement(query);
-// statement.setString(1, requestData);
-// statement.setString(2, id);
-// statement.executeUpdate();
-
-// response = "Data updated successfully";
-// } finally {
-// closeResources(null, statement, connection);
-// }
-
-// return response;
-// }
-// }

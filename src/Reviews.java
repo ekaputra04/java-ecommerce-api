@@ -84,4 +84,18 @@ public class Reviews {
             System.out.println(e.getMessage());
         }
     }
+
+    public void updateReview(String idReview) {
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            String sql = "UPDATE reviews SET star = \"" + star +
+                    "\" , description = \"" + description +
+                    "\" , order_id = \"" + orderId +
+                    "\" WHERE review_id = " + idReview;
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }
