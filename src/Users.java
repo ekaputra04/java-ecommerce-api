@@ -115,8 +115,7 @@ public class Users {
     public void updateUser(String idUser) {
         try {
             Connection conn = DatabaseConnection.getConnection();
-            String sql = "UPDATE users SET users = " + id +
-                    " , first_name = \"" + firstName +
+            String sql = "UPDATE users SET first_name = \"" + firstName +
                     "\" , last_name = \"" + lastName +
                     "\" , email = \"" + email +
                     "\" , phone_number = \"" + phoneNumber +

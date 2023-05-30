@@ -139,4 +139,21 @@ public class Addresses {
             System.out.println(e.getMessage());
         }        
     }
+
+    public void updateAddress(String idAddress) {
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            String sql = "UPDATE users SET tipe = \"" + type +
+                    "\" , line1 = \"" + line1 +
+                    "\" , line2 = \"" + line2 +
+                    "\" , city = \"" + city +
+                    "\" , province = \"" + province +
+                    "\" , postcode = \"" + postcode +
+                    "\" WHERE id = " + idAddress;
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }

@@ -45,10 +45,21 @@ public class HandlerPutRequest {
         br.close();
         isr.close();
         String json = buf.toString();
+
         if (tableName.equals("users")) {
             Users user = new Users();
             if (user.parseUserJSON(json) != 1) {
                 user.updateUser(id);
+                response = "Data has been successfully updated.";
+                statusCode = 200;
+            } else {
+                response = "Data is not valid.";
+                statusCode = 400;
+            }
+        } else if (tableName.equals("addresses")) {
+            Addresses addresses = new Addresses();
+            if (addresses.parseAddressesJSON(json) != 1) {
+                addresses.updateAddress(id);
                 response = "Data has been successfully updated.";
                 statusCode = 200;
             } else {
