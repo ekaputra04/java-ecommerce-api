@@ -110,4 +110,20 @@ public class Products {
             System.out.println(e.getMessage());
         }
     }
+
+    public void updateProduct(String idProduct) {
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            String sql = "UPDATE products SET seller = \"" + seller +
+                    "\" , title = \"" + title +
+                    "\" , description = \"" + description +
+                    "\" , price = \"" + price +
+                    "\" , stock = \"" + stock +
+                    "\" WHERE id = " + idProduct;
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }

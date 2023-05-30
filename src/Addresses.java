@@ -143,7 +143,7 @@ public class Addresses {
     public void updateAddress(String idAddress) {
         try {
             Connection conn = DatabaseConnection.getConnection();
-            String sql = "UPDATE users SET tipe = \"" + type +
+            String sql = "UPDATE addresses SET tipe = \"" + type +
                     "\" , line1 = \"" + line1 +
                     "\" , line2 = \"" + line2 +
                     "\" , city = \"" + city +
