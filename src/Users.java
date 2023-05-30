@@ -1,4 +1,11 @@
 import org.json.JSONObject;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.ArrayList;
 
 public class Users {
     private int id;
@@ -71,12 +78,42 @@ public class Users {
 
     public JSONObject toJsonObject() {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("id", id);
-        jsonObject.put("firstName", firstName);
-        jsonObject.put("lastName", lastName);
+        jsonObject.put("users", id);
+        jsonObject.put("first_name", firstName);
+        jsonObject.put("last_name", lastName);
         jsonObject.put("email", email);
-        jsonObject.put("phoneNumber", phoneNumber);
-        jsonObject.put("type", type);
+        jsonObject.put("phone_number", phoneNumber);
+        jsonObject.put("tipe", type);
         return jsonObject;
+    }
+
+    public int parseUserJSON(String json){
+        try {
+            JSONObject obj = new JSONObject(json);
+            firstName = obj.getString("first_name");
+            lastName = obj.getString("last_name");
+            email = obj.getString("email");
+            phoneNumber = obj.getString("phone_number");
+            type = obj.getString("tipe");
+        }catch (Exception e){
+            return 1;
+        }
+        return 0;
+    }
+
+    public void insertUser(){
+        try{
+            Connection conn = DatabaseConnection.getConnection();
+            String sql = "INSERT INTO users (first_name, last_name, email, phone_number, tipe) VALUES (?,?,?,?,?)";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, firstName);
+            pstmt.setString(2, lastName);
+            pstmt.setString(3, email);
+            pstmt.setString(4, phoneNumber);
+            pstmt.setString(5, type);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

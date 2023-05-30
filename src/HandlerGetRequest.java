@@ -1,3 +1,4 @@
+// import com.sun.corba.se.impl.oa.poa.ActiveObjectMap.Key;
 import com.sun.net.httpserver.HttpExchange;
 import java.sql.*;
 import org.json.JSONArray;
@@ -15,7 +16,6 @@ public class HandlerGetRequest {
     private static Statement statement;
 
     public static String handleGetRequest(HttpExchange exchange) throws SQLException {
-
         try {
             // Menghapus data pada JSONArray untuk menghindari duplikasi data
             data.clear();
@@ -25,7 +25,10 @@ public class HandlerGetRequest {
 
             // Memisahkan path menjadi endpoint dan id
             pathSegments = path.split("/");
-            
+
+            // Mendapatkan query string dari permintaan
+            query = exchange.getRequestURI().getQuery();
+
             // Menghubungkan ke database SQLite
             conn = DatabaseConnection.getConnection();
             statement = conn.createStatement();
@@ -33,14 +36,26 @@ public class HandlerGetRequest {
             // Memastikan segment pertama adalah nama tabel
             if (pathSegments.length == 2) {
                 tableName = pathSegments[1];
-                query = "SELECT * FROM " + tableName;
-            } else if (pathSegments.length == 3){
+                if (query == null) {
+                    query = "SELECT * FROM " + tableName;
+                } else {
+                    query = "SELECT * FROM " + tableName + " WHERE " + query;
+                }
+            } else if (pathSegments.length == 3) {
                 tableName = pathSegments[1];
-                id = pathSegments[2];                
-                query = "SELECT * FROM " + tableName + " WHERE users = " + id;
+                id = pathSegments[2];
+                if (tableName.equalsIgnoreCase("users")){
+                    query = "SELECT * FROM " + tableName + " WHERE users = " + id;
+                } else if (tableName.equalsIgnoreCase("orders") || tableName.equalsIgnoreCase("products") || tableName.equalsIgnoreCase("addresses")){
+                    query = "SELECT * FROM " + tableName + " WHERE id = " + id;
+                } else if (tableName.equalsIgnoreCase("order_details")){
+                    query = "SELECT * FROM " + tableName + " WHERE order_id = " + id;
+                } else if (tableName.equalsIgnoreCase("reviews")){
+                    query = "SELECT * FROM " + tableName + " WHERE review_id = " + id;
+                }
             } else {
                 // Jika tidak ada nama tabel, kembalikan respon error
-                return "Invalid path. Please specify a table name.";
+                return "Invalid path. Please specify a valid table name.";
             }
 
             // Memeriksa apakah tabel valid
@@ -120,7 +135,7 @@ public class HandlerGetRequest {
                     Reviews reviews = new Reviews();
                     reviews.setReviewId(resultSet.getInt("review_id"));
                     reviews.setStar(resultSet.getInt("star"));
-                    reviews.setDescription(resultSet.getString("desciption"));
+                    reviews.setDescription(resultSet.getString("description"));
                     reviews.setOrderId(resultSet.getInt("order_id"));
                     data.put(reviews.toJsonObject());
                     // item.put("id", resultSet.getInt("review_id"));

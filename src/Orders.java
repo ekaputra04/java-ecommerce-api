@@ -76,7 +76,7 @@ public class Orders {
         jsonObject.put("note", note);
         jsonObject.put("total", total);
         jsonObject.put("discount", discount);
-        jsonObject.put("isPaid", isPaid);
+        jsonObject.put("is_paid", isPaid);
         return jsonObject;
     }
 }

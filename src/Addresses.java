@@ -82,8 +82,8 @@ public class Addresses {
 
     public JSONObject toJsonObject() {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("users", users);
-        jsonObject.put("type", type);
+        jsonObject.put("id", users);
+        jsonObject.put("tipe", type);
         jsonObject.put("line1", line1);
         jsonObject.put("line2", line2);
         jsonObject.put("city", city);

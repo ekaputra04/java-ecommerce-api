@@ -51,7 +51,7 @@ public class OrderDetails {
 
     public JSONObject toJsonObject() {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("orderId", orderId);
+        jsonObject.put("order_id", orderId);
         jsonObject.put("product", product);
         jsonObject.put("quantity", quantity);
         jsonObject.put("price", price);

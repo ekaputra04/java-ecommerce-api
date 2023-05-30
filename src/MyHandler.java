@@ -1,15 +1,15 @@
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-// import com.sun.net.httpserver.HttpServer;
-// import java.net.InetSocketAddress;
-// import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.net.httpserver.HttpServer;
+import java.net.InetSocketAddress;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.sql.*;
-// import org.json.JSONArray;
-// import org.json.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class MyHandler implements HttpHandler {
 
@@ -27,12 +27,18 @@ public class MyHandler implements HttpHandler {
             method = exchange.getRequestMethod();
 
             // Mendapatkan query dari request
-            // query = exchange.getRequestURI().getQuery();
+            query = exchange.getRequestURI().getQuery();
 
             if (method.equalsIgnoreCase("GET")) {
                 response = HandlerGetRequest.handleGetRequest(exchange);
+                exchange.getResponseHeaders().set("Content-Type", "application/json");
+                exchange.sendResponseHeaders(statusCode, response.getBytes().length);
+                OutputStream outputStream = exchange.getResponseBody();
+                outputStream.write(response.getBytes());
+                outputStream.flush();
+                outputStream.close();
             } else if (method.equalsIgnoreCase("POST")) {
-                response = HandlerPostRequest.handlePostRequest(exchange);
+                HandlerPostRequest.handlePostRequest(exchange);
             } else if (method.equalsIgnoreCase("PUT")) {
                 response = handlePutRequest(exchange);
             } else if (method.equalsIgnoreCase("DELETE")) {
@@ -45,12 +51,12 @@ public class MyHandler implements HttpHandler {
             statusCode = 500; // Internal Server Error
         }
 
-        exchange.getResponseHeaders().set("Content-Type", "application/json");
-        exchange.sendResponseHeaders(statusCode, response.getBytes().length);
-        OutputStream outputStream = exchange.getResponseBody();
-        outputStream.write(response.getBytes());
-        outputStream.flush();
-        outputStream.close();
+        // exchange.getResponseHeaders().set("Content-Type", "application/json");
+        // exchange.sendResponseHeaders(statusCode, response.getBytes().length);
+        // OutputStream outputStream = exchange.getResponseBody();
+        // outputStream.write(response.getBytes());
+        // outputStream.flush();
+        // outputStream.close();
     }
 
     private String handlePutRequest(HttpExchange exchange) throws SQLException,

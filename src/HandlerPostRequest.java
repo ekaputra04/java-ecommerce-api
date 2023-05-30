@@ -3,55 +3,59 @@ import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.sql.*;
+import java.io.OutputStream;
 
 public class HandlerPostRequest {
-    public static String handlePostRequest(HttpExchange exchange) throws SQLException,
+
+    private static Connection conn;
+    private static String path;
+    private static String response;
+    private static String tableName;
+    private static String[] pathSegments;
+    private static String query;
+
+    public static void handlePostRequest(HttpExchange exchange) throws SQLException,
             IOException {
-        String response = "";
-        Connection connection = null;
-        PreparedStatement statement = null;
+        OutputStream outputStream = exchange.getResponseBody();
 
-        try {
-            connection = DatabaseConnection.getConnection();
+        // Mendapatkan path dari permintaan
+        path = exchange.getRequestURI().getPath();
 
-            // Membaca data dari body permintaan
-            BufferedReader reader = new BufferedReader(new InputStreamReader(exchange.getRequestBody()));
-            String requestData = reader.readLine();
+        // Memisahkan path menjadi endpoint dan id
+        pathSegments = path.split("/");
 
-            // Memasukkan data ke dalam database
-            String query = "INSERT INTO mytable (column_name) VALUES (?)";
-            statement = connection.prepareStatement(query);
-            statement.setString(1, requestData);
-            statement.executeUpdate();
-
-            response = "Data inserted successfully";
-        } finally {
-            closeResources(null, statement, connection);
+        if (pathSegments.length == 2) {
+            tableName = pathSegments[1];
+        } else {
+            response = "Invalid path. Please specify a valid table name.";
         }
 
-        return response;
-    }
+        InputStreamReader isr = new InputStreamReader(exchange.getRequestBody(), "utf-8");
+        BufferedReader br = new BufferedReader(isr);
+        int i;
+        StringBuilder buf = new StringBuilder();
+        while ((i = br.read()) != -1) {
+            buf.append((char) i);
+        }
+        br.close();
+        isr.close();
+        String json = buf.toString();
 
-    private static void closeResources(ResultSet resultSet, PreparedStatement statement, Connection connection) {
-        if (resultSet != null) {
-            try {
-                resultSet.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        if (statement != null) {
-            try {
-                statement.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        if (connection != null) {
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
+        if (tableName.equals("users")) {
+            Users user = new Users();
+            if (user.parseUserJSON(json) != 1) {
+                user.insertUser();
+                response = "Data berhasil dimasukkan";
+                exchange.sendResponseHeaders(200, response.getBytes().length);
+                outputStream.write(response.getBytes());
+                outputStream.flush();
+                outputStream.close();
+            } else {
+                response = "Data tidak sesuai";
+                exchange.sendResponseHeaders(400, response.getBytes().length);
+                outputStream.write(response.getBytes());
+                outputStream.flush();
+                outputStream.close();
             }
         }
     }

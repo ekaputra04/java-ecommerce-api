@@ -51,10 +51,10 @@ public class Reviews {
 
     public JSONObject toJsonObject() {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("reviewId", reviewId);
-        jsonObject.put("orderId", orderId);
+        jsonObject.put("review_id", reviewId);
         jsonObject.put("star", star);
         jsonObject.put("description", description);
+        jsonObject.put("order_id", orderId);
         return jsonObject;
     }
 }
