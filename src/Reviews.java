@@ -1,4 +1,7 @@
 import org.json.JSONObject;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class Reviews {
     private int reviewId;
@@ -54,5 +57,31 @@ public class Reviews {
         jsonObject.put("description", description);
         jsonObject.put("order_id", orderId);
         return jsonObject;
+    }
+
+    public int parseReviewsJSON(String json){
+        try {
+            JSONObject obj = new JSONObject(json);
+            star = obj.getInt("star");
+            description = obj.getString("description");
+            orderId = obj.getInt("order_id");
+        }catch (Exception e){
+            return 1;
+        }
+        return 0;
+    }
+
+    public void insertReview(){
+        try{
+            Connection conn = DatabaseConnection.getConnection();
+            String sql = "INSERT INTO users (star, description, order_id) VALUES (?,?,?)";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setInt(1, star);
+            pstmt.setString(2, description);
+            pstmt.setInt(3, orderId);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

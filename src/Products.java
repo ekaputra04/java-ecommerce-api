@@ -1,4 +1,7 @@
 import org.json.JSONObject;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class Products {
     private int id;
@@ -8,9 +11,7 @@ public class Products {
     private String price;
     private int stock;
 
-    public Products(){
-
-    }
+    public Products(){}
 
     public Products (int id, int seller, String title, String description, String price, int stock){
         this.id = id;
