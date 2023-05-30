@@ -14,8 +14,7 @@ public class HandlerPutRequest {
     private static String tableName;
     private static String[] pathSegments;
 
-    public static void handlePutRequest(HttpExchange exchange) throws SQLException,
-            IOException {
+    public static void handlePutRequest(HttpExchange exchange) throws SQLException, IOException {
 
         OutputStream outputStream = exchange.getResponseBody();
 
@@ -106,7 +105,7 @@ public class HandlerPutRequest {
                 response = "Data is not valid.";
                 statusCode = 400;
             }
-        } 
+        }
 
         exchange.sendResponseHeaders(statusCode, response.length());
         outputStream.write(response.getBytes());

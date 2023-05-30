@@ -42,7 +42,7 @@ public class MyHandler implements HttpHandler {
             } else if (method.equalsIgnoreCase("PUT")) {
                 HandlerPutRequest.handlePutRequest(exchange);
             } else if (method.equalsIgnoreCase("DELETE")) {
-                response = handleDeleteRequest(exchange);
+                HandlerDeleteRequest.handleDeleteRequest(exchange);
             } else {
                 statusCode = 405; // Method Not Allowed
             }

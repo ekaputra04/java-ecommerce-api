@@ -8,13 +8,12 @@ import java.io.OutputStream;
 public class HandlerPostRequest {
 
     private static String path;
-    private static int statusCode;
-    private static String response;
     private static String tableName;
     private static String[] pathSegments;
+    private static int statusCode;
+    private static String response;    
 
-    public static void handlePostRequest(HttpExchange exchange) throws SQLException,
-            IOException {
+    public static void handlePostRequest(HttpExchange exchange) throws SQLException, IOException {
 
         OutputStream outputStream = exchange.getResponseBody();
 
@@ -39,7 +38,7 @@ public class HandlerPostRequest {
         while ((i = br.read()) != -1) {
             buf.append((char) i);
         }
-        
+
         br.close();
         isr.close();
         String json = buf.toString();
@@ -49,7 +48,7 @@ public class HandlerPostRequest {
             if (user.parseUserJSON(json) != 1) {
                 user.insertUser();
                 response = "Data has been successfully inserted.";
-                statusCode = 200;                
+                statusCode = 200;
             } else {
                 response = "Invalid data.";
                 statusCode = 400;
@@ -73,7 +72,7 @@ public class HandlerPostRequest {
             } else {
                 response = "Invalid data.";
                 statusCode = 400;
-            } 
+            }
         } else if (tableName.equals("orders")) {
             Orders orders = new Orders();
             if (orders.parseOrdersJSON(json) != 1) {
@@ -93,7 +92,7 @@ public class HandlerPostRequest {
             } else {
                 response = "Invalid data.";
                 statusCode = 400;
-            } 
+            }
         } else if (tableName.equals("reviews")) {
             Reviews reviews = new Reviews();
             if (reviews.parseReviewsJSON(json) != 1) {
