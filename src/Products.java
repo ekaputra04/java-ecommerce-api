@@ -3,6 +3,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+/*
+ * Class ini digunakan sebagai model dari tabel products
+ */
+
 public class Products {
     private int id;
     private int seller;
@@ -11,15 +15,16 @@ public class Products {
     private String price;
     private int stock;
 
-    public Products(){}
+    public Products() {
+    }
 
-    public Products (int id, int seller, String title, String description, String price, int stock){
+    public Products(int id, int seller, String title, String description, String price, int stock) {
         this.id = id;
         this.seller = seller;
         this.title = title;
-        this.description=description;
+        this.description = description;
         this.price = price;
-        this.stock=stock;
+        this.stock = stock;
     }
 
     public int getId() {
@@ -65,7 +70,7 @@ public class Products {
     public int getStock() {
         return stock;
     }
-    
+
     public void setStock(int stock) {
         this.stock = stock;
     }
@@ -81,7 +86,7 @@ public class Products {
         return jsonObject;
     }
 
-    public int parseProductsJSON(String json){
+    public int parseProductsJSON(String json) {
         try {
             JSONObject obj = new JSONObject(json);
             seller = obj.getInt("seller");
@@ -89,14 +94,14 @@ public class Products {
             description = obj.getString("description");
             price = obj.getString("price");
             stock = obj.getInt("stock");
-        }catch (Exception e){
-            return 1;            
+        } catch (Exception e) {
+            return 1;
         }
         return 0;
     }
 
-    public void insertProduct(){
-        try{
+    public void insertProduct() {
+        try {
             Connection conn = DatabaseConnection.getConnection();
             String sql = "INSERT INTO products (seller, title, description, price, stock) VALUES (?,?,?,?,?)";
             PreparedStatement pstmt = conn.prepareStatement(sql);

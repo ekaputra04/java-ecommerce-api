@@ -5,13 +5,16 @@ import java.io.InputStreamReader;
 import java.sql.*;
 import java.io.OutputStream;
 
-public class HandlerPostRequest {
+/**
+ * Class `HandlerPostRequest` menangani permintaan HTTP dengan metode POST.
+ */
 
+public class HandlerPostRequest {
     private static String path;
     private static String tableName;
     private static String[] pathSegments;
     private static int statusCode;
-    private static String response;    
+    private static String response;
 
     public static void handlePostRequest(HttpExchange exchange) throws SQLException, IOException {
 

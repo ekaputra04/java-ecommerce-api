@@ -3,8 +3,11 @@ import java.io.IOException;
 import java.sql.*;
 import java.io.OutputStream;
 
-public class HandlerDeleteRequest {
+/**
+ * Class `HandlerDeleteRequest` menangani permintaan HTTP dengan metode DELETE.
+ */
 
+public class HandlerDeleteRequest {
     private static Connection conn;
     private static String path;
     private static String tableName;
@@ -21,6 +24,7 @@ public class HandlerDeleteRequest {
         // Memisahkan path menjadi endpoint dan id
         pathSegments = path.split("/");
 
+        // Mendapatkan OutputStream dari ResponseBody pada objek `exchange`
         OutputStream outputStream = exchange.getResponseBody();
 
         if (pathSegments.length == 3) {
@@ -48,6 +52,13 @@ public class HandlerDeleteRequest {
             }
             response = "Delete berhasil";
             statusCode = 200;
+            exchange.sendResponseHeaders(statusCode, response.length());
+            outputStream.write(response.getBytes());
+            outputStream.flush();
+            outputStream.close();
+        } else {
+            response = "Path not found";
+            statusCode = 400;
             exchange.sendResponseHeaders(statusCode, response.length());
             outputStream.write(response.getBytes());
             outputStream.flush();

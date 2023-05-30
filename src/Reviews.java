@@ -3,13 +3,18 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+/*
+ * Class ini digunakan sebagai model dari tabel reviews
+ */
+
 public class Reviews {
     private int reviewId;
     private int orderId;
     private int star;
     private String description;
 
-    public Reviews() {}
+    public Reviews() {
+    }
 
     public Reviews(int reviewId, int orderId, int star, String description) {
         this.reviewId = reviewId;
@@ -59,20 +64,20 @@ public class Reviews {
         return jsonObject;
     }
 
-    public int parseReviewsJSON(String json){
+    public int parseReviewsJSON(String json) {
         try {
             JSONObject obj = new JSONObject(json);
             star = obj.getInt("star");
             description = obj.getString("description");
             orderId = obj.getInt("order_id");
-        }catch (Exception e){
+        } catch (Exception e) {
             return 1;
         }
         return 0;
     }
 
-    public void insertReview(){
-        try{
+    public void insertReview() {
+        try {
             Connection conn = DatabaseConnection.getConnection();
             String sql = "INSERT INTO reviews (star, description, order_id) VALUES (?,?,?)";
             PreparedStatement pstmt = conn.prepareStatement(sql);

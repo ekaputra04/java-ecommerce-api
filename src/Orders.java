@@ -3,6 +3,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+/*
+ * Class ini digunakan sebagai model dari tabel orders
+ */
+
 public class Orders {
     private int id;
     private int buyer;
@@ -11,7 +15,8 @@ public class Orders {
     private int discount;
     private boolean isPaid;
 
-    public Orders() {}
+    public Orders() {
+    }
 
     public Orders(int id, int buyer, int note, int total, int discount, boolean isPaid) {
         this.id = id;
@@ -81,7 +86,7 @@ public class Orders {
         return jsonObject;
     }
 
-    public int parseOrdersJSON(String json){
+    public int parseOrdersJSON(String json) {
         try {
             JSONObject obj = new JSONObject(json);
             buyer = obj.getInt("buyer");
@@ -89,14 +94,14 @@ public class Orders {
             total = obj.getInt("total");
             discount = obj.getInt("discount");
             isPaid = obj.getBoolean("is_paid");
-        }catch (Exception e){
+        } catch (Exception e) {
             return 1;
         }
         return 0;
     }
 
-    public void insertOrder(){
-        try{
+    public void insertOrder() {
+        try {
             Connection conn = DatabaseConnection.getConnection();
             String sql = "INSERT INTO orders (buyer, note, total, discount, is_paid) VALUES (?,?,?,?,?)";
             PreparedStatement pstmt = conn.prepareStatement(sql);

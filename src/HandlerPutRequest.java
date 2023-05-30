@@ -2,11 +2,14 @@ import com.sun.net.httpserver.HttpExchange;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.sql.*;
 import java.io.OutputStream;
+import java.sql.*;
+
+/**
+ * Class `HandlerPutRequest` menangani permintaan HTTP dengan metode PUT.
+ */
 
 public class HandlerPutRequest {
-
     private static String path;
     private static int statusCode;
     private static String id;
@@ -15,7 +18,6 @@ public class HandlerPutRequest {
     private static String[] pathSegments;
 
     public static void handlePutRequest(HttpExchange exchange) throws SQLException, IOException {
-
         OutputStream outputStream = exchange.getResponseBody();
 
         // Mendapatkan path dari permintaan

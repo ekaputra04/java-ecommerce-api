@@ -3,6 +3,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+/*
+ * Class ini digunakan sebagai model dari tabel users
+ */
+
 public class Users {
     private int id;
     private String firstName;

@@ -1,10 +1,12 @@
-// import com.sun.corba.se.impl.oa.poa.ActiveObjectMap.Key;
 import com.sun.net.httpserver.HttpExchange;
 import java.sql.*;
 import org.json.JSONArray;
 
-public class HandlerGetRequest {
+/**
+ * Class `HandlerGetRequest` menangani permintaan HTTP dengan metode GET.
+ */
 
+public class HandlerGetRequest {
     private static String tableName;
     private static String id;
     private static String path;
@@ -44,13 +46,14 @@ public class HandlerGetRequest {
             } else if (pathSegments.length == 3) {
                 tableName = pathSegments[1];
                 id = pathSegments[2];
-                if (tableName.equalsIgnoreCase("users")){
+                if (tableName.equalsIgnoreCase("users")) {
                     query = "SELECT * FROM " + tableName + " WHERE users = " + id;
-                } else if (tableName.equalsIgnoreCase("orders") || tableName.equalsIgnoreCase("products") || tableName.equalsIgnoreCase("addresses")){
+                } else if (tableName.equalsIgnoreCase("orders") || tableName.equalsIgnoreCase("products")
+                        || tableName.equalsIgnoreCase("addresses")) {
                     query = "SELECT * FROM " + tableName + " WHERE id = " + id;
-                } else if (tableName.equalsIgnoreCase("order_details")){
+                } else if (tableName.equalsIgnoreCase("order_details")) {
                     query = "SELECT * FROM " + tableName + " WHERE order_id = " + id;
-                } else if (tableName.equalsIgnoreCase("reviews")){
+                } else if (tableName.equalsIgnoreCase("reviews")) {
                     query = "SELECT * FROM " + tableName + " WHERE review_id = " + id;
                 }
             } else {
@@ -68,7 +71,6 @@ public class HandlerGetRequest {
 
             // Mengambil hasil query dan menyimpannya dalam JSONArray
             while (resultSet.next()) {
-                // JSONObject item = new JSONObject();
                 if (tableName.equals("users")) {
                     Users users = new Users();
                     users.setId(resultSet.getInt("users"));
@@ -78,12 +80,6 @@ public class HandlerGetRequest {
                     users.setPhoneNumber(resultSet.getString("phone_number"));
                     users.setType(resultSet.getString("tipe"));
                     data.put(users.toJsonObject());
-                    // item.put("users", resultSet.getInt("users"));
-                    // item.put("first_name", resultSet.getString("first_name"));
-                    // item.put("last_name", resultSet.getString("last_name"));
-                    // item.put("email", resultSet.getString("email"));
-                    // item.put("phone_number", resultSet.getString("phone_number"));
-                    // item.put("type", resultSet.getString("tipe"));
                 } else if (tableName.equals("addresses")) {
                     Addresses addresses = new Addresses();
                     addresses.setUsers(resultSet.getInt("id"));
@@ -94,13 +90,6 @@ public class HandlerGetRequest {
                     addresses.setProvince(resultSet.getString("province"));
                     addresses.setPostcode(resultSet.getString("postcode"));
                     data.put(addresses.toJsonObject());
-                    // item.put("users", resultSet.getInt("id"));
-                    // item.put("type", resultSet.getString("tipe"));
-                    // item.put("line1", resultSet.getString("line1"));
-                    // item.put("line2", resultSet.getString("line2"));
-                    // item.put("city", resultSet.getString("city"));
-                    // item.put("province", resultSet.getString("province"));
-                    // item.put("postcode", resultSet.getString("postcode"));
                 } else if (tableName.equals("products")) {
                     Products products = new Products();
                     products.setId(resultSet.getInt("id"));
@@ -110,12 +99,6 @@ public class HandlerGetRequest {
                     products.setPrice(resultSet.getString("price"));
                     products.setStock(resultSet.getInt("stock"));
                     data.put(products.toJsonObject());
-                    // item.put("id", resultSet.getInt("id"));
-                    // item.put("seller", resultSet.getInt("seller"));
-                    // item.put("title", resultSet.getString("title"));
-                    // item.put("description", resultSet.getString("description"));
-                    // item.put("price", resultSet.getString("price"));
-                    // item.put("stock", resultSet.getInt("stock"));
                 } else if (tableName.equals("orders")) {
                     Orders orders = new Orders();
                     orders.setId(resultSet.getInt("id"));
@@ -125,12 +108,6 @@ public class HandlerGetRequest {
                     orders.setDiscount(resultSet.getInt("discount"));
                     orders.setIsPaid(resultSet.getBoolean("is_paid"));
                     data.put(orders.toJsonObject());
-                    // item.put("id", resultSet.getInt("id"));
-                    // item.put("buyer", resultSet.getInt("buyer"));
-                    // item.put("note", resultSet.getInt("note"));
-                    // item.put("total", resultSet.getInt("total"));
-                    // item.put("discount", resultSet.getInt("discount"));
-                    // item.put("is_paid", resultSet.getString("is_paid"));
                 } else if (tableName.equals("reviews")) {
                     Reviews reviews = new Reviews();
                     reviews.setReviewId(resultSet.getInt("review_id"));
@@ -138,10 +115,6 @@ public class HandlerGetRequest {
                     reviews.setDescription(resultSet.getString("description"));
                     reviews.setOrderId(resultSet.getInt("order_id"));
                     data.put(reviews.toJsonObject());
-                    // item.put("id", resultSet.getInt("review_id"));
-                    // item.put("star", resultSet.getInt("star"));
-                    // item.put("description", resultSet.getString("desciption"));
-                    // item.put("order_id", resultSet.getInt("order_id"));
                 } else if (tableName.equals("order_details")) {
                     OrderDetails orderDetails = new OrderDetails();
                     orderDetails.setOrderId(resultSet.getInt("order_id"));
@@ -149,12 +122,7 @@ public class HandlerGetRequest {
                     orderDetails.setQuantity(resultSet.getInt("quantity"));
                     orderDetails.setPrice(resultSet.getInt("price"));
                     data.put(orderDetails.toJsonObject());
-                    // item.put("id", resultSet.getInt("order_id"));
-                    // item.put("product", resultSet.getInt("product"));
-                    // item.put("quantity", resultSet.getInt("quantity"));
-                    // item.put("price", resultSet.getInt("price"));
                 }
-                // data.put(item);
             }
 
             // Menutup koneksi ke database

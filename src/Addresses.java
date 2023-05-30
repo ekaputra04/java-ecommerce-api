@@ -3,6 +3,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+/*
+ * Class ini digunakan sebagai model dari tabel addresses
+ */
+
 public class Addresses {
     private int users;
     private String type;
@@ -12,7 +16,8 @@ public class Addresses {
     private String province;
     private String postcode;
 
-    public Addresses() {}
+    public Addresses() {
+    }
 
     public Addresses(int users, String type, String line1, String line2, String city, String province,
             String postcode) {
@@ -93,22 +98,7 @@ public class Addresses {
         return jsonObject;
     }
 
-    public int parseJson(String json){
-        try {
-            JSONObject obj = new JSONObject(json);
-            type = obj.getString("tipe");
-            line1 = obj.getString("line1");
-            line2 = obj.getString("line2");
-            city = obj.getString("city");
-            province = obj.getString("province");            
-            postcode = obj.getString("postcode");
-        }catch (Exception e){
-            return 1;
-        }
-        return 0;
-    }
-
-    public int parseAddressesJSON(String json){
+    public int parseJson(String json) {
         try {
             JSONObject obj = new JSONObject(json);
             type = obj.getString("tipe");
@@ -117,14 +107,29 @@ public class Addresses {
             city = obj.getString("city");
             province = obj.getString("province");
             postcode = obj.getString("postcode");
-        }catch (Exception e){
+        } catch (Exception e) {
             return 1;
         }
         return 0;
     }
 
-    public void insertAddress(){
-        try{
+    public int parseAddressesJSON(String json) {
+        try {
+            JSONObject obj = new JSONObject(json);
+            type = obj.getString("tipe");
+            line1 = obj.getString("line1");
+            line2 = obj.getString("line2");
+            city = obj.getString("city");
+            province = obj.getString("province");
+            postcode = obj.getString("postcode");
+        } catch (Exception e) {
+            return 1;
+        }
+        return 0;
+    }
+
+    public void insertAddress() {
+        try {
             Connection conn = DatabaseConnection.getConnection();
             String sql = "INSERT INTO addresses (tipe, line1, line2, city, province, postcode) VALUES (?,?,?,?,?,?)";
             PreparedStatement pstmt = conn.prepareStatement(sql);
@@ -137,7 +142,7 @@ public class Addresses {
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-        }        
+        }
     }
 
     public void updateAddress(String idAddress) {
