@@ -8,41 +8,45 @@ public class HandlerGetRequest {
     private static String id;
     private static String path;
     private static String query;
+    private static String[] pathSegments;
     private static JSONArray data = new JSONArray();
     private static ResultSet resultSet;
+    private static Connection conn;
+    private static Statement statement;
 
     public static String handleGetRequest(HttpExchange exchange) throws SQLException {
 
-        // Mendapatkan path dari permintaan
-        path = exchange.getRequestURI().getPath();
-        // Memisahkan path menjadi endpoint dan id
-        String[] pathSegments = path.split("/");
-        // Menghubungkan ke database SQLite
-        Connection conn = DatabaseConnection.getConnection();
-        Statement statement = conn.createStatement();
-
-        // Memastikan segment pertama adalah nama tabel
-        if (pathSegments.length >= 2) {
-            tableName = pathSegments[1];
-        } else {
-            // Jika tidak ada nama tabel, kembalikan respon error
-            return "Invalid path. Please specify a table name.";
-        }
-
-        // Memeriksa apakah tabel valid
-        if (!isValidTable(tableName)) {
-            // Jika tabel tidak valid, kembalikan respon error
-            return "Invalid table name.";
-        }
-
         try {
-            if (pathSegments.length == 3) {
-                // Memastikan ada ID yang diberikan
-                id = pathSegments[2];
+            // Menghapus data pada JSONArray untuk menghindari duplikasi data
+            data.clear();
+
+            // Mendapatkan path dari permintaan
+            path = exchange.getRequestURI().getPath();
+
+            // Memisahkan path menjadi endpoint dan id
+            pathSegments = path.split("/");
+            
+            // Menghubungkan ke database SQLite
+            conn = DatabaseConnection.getConnection();
+            statement = conn.createStatement();
+
+            // Memastikan segment pertama adalah nama tabel
+            if (pathSegments.length == 2) {
+                tableName = pathSegments[1];
+                query = "SELECT * FROM " + tableName;
+            } else if (pathSegments.length == 3){
+                tableName = pathSegments[1];
+                id = pathSegments[2];                
                 query = "SELECT * FROM " + tableName + " WHERE users = " + id;
             } else {
-                // Jika tidak ada ID, ambil semua data dari tabel
-                query = "SELECT * FROM " + tableName;
+                // Jika tidak ada nama tabel, kembalikan respon error
+                return "Invalid path. Please specify a table name.";
+            }
+
+            // Memeriksa apakah tabel valid
+            if (!isValidTable(tableName)) {
+                // Jika tabel tidak valid, kembalikan respon error
+                return "Invalid table name.";
             }
 
             resultSet = statement.executeQuery(query);
@@ -153,7 +157,7 @@ public class HandlerGetRequest {
 
     private static boolean isValidTable(String tableName) {
         // Daftar tabel yang valid
-        String[] validTables = { "users", "products", "orders", "addresses", "order_details", "reviews"};
+        String[] validTables = { "users", "products", "orders", "addresses", "order_details", "reviews" };
 
         // Memeriksa apakah tabel ada dalam daftar tabel yang valid
         for (String validTable : validTables) {

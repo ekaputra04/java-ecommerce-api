@@ -13,11 +13,11 @@ import java.sql.*;
 
 public class MyHandler implements HttpHandler {
 
-    public static String method;
-    public static String path;
-    public static String query;
-    public static String response;
-    public static int statusCode = 200;
+    private static String method;
+    private static String path;
+    private static String query;
+    private static String response = "";
+    private static int statusCode = 200;
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
@@ -25,13 +25,14 @@ public class MyHandler implements HttpHandler {
         try {
             // Mendapatkan method dari permintaan
             method = exchange.getRequestMethod();
+
             // Mendapatkan query dari request
-            query = exchange.getRequestURI().getQuery();
+            // query = exchange.getRequestURI().getQuery();
 
             if (method.equalsIgnoreCase("GET")) {
                 response = HandlerGetRequest.handleGetRequest(exchange);
             } else if (method.equalsIgnoreCase("POST")) {
-                response = handlePostRequest(exchange);
+                response = HandlerPostRequest.handlePostRequest(exchange);
             } else if (method.equalsIgnoreCase("PUT")) {
                 response = handlePutRequest(exchange);
             } else if (method.equalsIgnoreCase("DELETE")) {
@@ -50,33 +51,6 @@ public class MyHandler implements HttpHandler {
         outputStream.write(response.getBytes());
         outputStream.flush();
         outputStream.close();
-    }
-
-    private String handlePostRequest(HttpExchange exchange) throws SQLException,
-            IOException {
-        String response = "";
-        Connection connection = null;
-        PreparedStatement statement = null;
-
-        try {
-            connection = DatabaseConnection.getConnection();
-
-            // Membaca data dari body permintaan
-            BufferedReader reader = new BufferedReader(new InputStreamReader(exchange.getRequestBody()));
-            String requestData = reader.readLine();
-
-            // Memasukkan data ke dalam database
-            String query = "INSERT INTO mytable (column_name) VALUES (?)";
-            statement = connection.prepareStatement(query);
-            statement.setString(1, requestData);
-            statement.executeUpdate();
-
-            response = "Data inserted successfully";
-        } finally {
-            closeResources(null, statement, connection);
-        }
-
-        return response;
     }
 
     private String handlePutRequest(HttpExchange exchange) throws SQLException,
