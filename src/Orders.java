@@ -110,4 +110,20 @@ public class Orders {
             System.out.println(e.getMessage());
         }
     }
+
+    public void updateOrder(String idOrder) {
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            String sql = "UPDATE orders SET buyer = \"" + buyer +
+                    "\" , note = \"" + note +
+                    "\" , total = \"" + total +
+                    "\" , discount = \"" + discount +
+                    "\" , is_paid = \"" + isPaid +
+                    "\" WHERE id = " + idOrder;
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 }

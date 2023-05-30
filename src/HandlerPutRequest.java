@@ -76,6 +76,16 @@ public class HandlerPutRequest {
                 response = "Data is not valid.";
                 statusCode = 400;
             }
+        } else if (tableName.equals("orders")) {
+            Orders orders = new Orders();
+            if (orders.parseOrdersJSON(json) != 1) {
+                orders.updateOrder(id);
+                response = "Data has been successfully updated.";
+                statusCode = 200;
+            } else {
+                response = "Data is not valid.";
+                statusCode = 400;
+            }
         } 
 
         exchange.sendResponseHeaders(statusCode, response.length());
