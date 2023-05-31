@@ -33,6 +33,7 @@ public class Fitur {
         data.put(jsonObject);
         int statusCode = jsonObject.getInt("status_code");
         String response = data.toString(2);
+        exchange.getResponseHeaders().set("Content-Type", "application/json");
         exchange.sendResponseHeaders(statusCode, response.getBytes().length);
         outputStream.write(response.getBytes());
         outputStream.flush();
