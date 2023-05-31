@@ -1,7 +1,6 @@
 import com.sun.net.httpserver.HttpExchange;
 import java.sql.*;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * Class `HandlerGetRequest` menangani permintaan HTTP dengan metode GET.
@@ -13,7 +12,6 @@ public class HandlerGetRequest {
     private static String path;
     private static String query;
     private static String response;
-    private static int statusCode;
     private static String[] pathSegments;
     private static JSONArray data = new JSONArray();
     private static ResultSet resultSet;
@@ -21,8 +19,7 @@ public class HandlerGetRequest {
     private static Statement statement;
 
     public static String handleGetRequest(HttpExchange exchange) throws SQLException {
-        JSONObject jsonObject = new JSONObject();
-        try {                    
+        try {
             // Menghapus data pada JSONArray untuk menghindari duplikasi data
             data.clear();
 
@@ -62,23 +59,13 @@ public class HandlerGetRequest {
                 }
             } else {
                 // Jika tidak ada nama tabel, kembalikan respon error
-                statusCode = 400;
-                jsonObject.put("status_code", 400);
-                jsonObject.put("message",
-                        "Invalid path. Please specify a valid table name. Table " + tableName + " is unavailable");
-                data.put(jsonObject);
-                // return "Invalid path. Please specify a valid table name.";
+                data.put(Fitur.unvaliableTable(tableName));
             }
 
             // Memeriksa apakah tabel valid
-            if (!isValidTable(tableName)) {
+            if (!Fitur.isValidTable(tableName)) {
                 // Jika tabel tidak valid, kembalikan respon error
-                statusCode = 400;
-                jsonObject.put("status_code", 400);
-                jsonObject.put("message",
-                        "Invalid path. Please specify a valid table name. Table " + tableName + " is unavailable");
-                data.put(jsonObject);
-                // return "Invalid table name.";
+                data.put(Fitur.unvaliableTable(tableName));
             }
 
             resultSet = statement.executeQuery(query);
@@ -86,7 +73,6 @@ public class HandlerGetRequest {
             // Mengambil hasil query dan menyimpannya dalam JSONArray
             while (resultSet.next()) {
                 if (tableName.equals("users")) {
-                    statusCode = 200;
                     Users users = new Users();
                     users.setId(resultSet.getInt("users"));
                     users.setFirstName(resultSet.getString("first_name"));
@@ -96,7 +82,6 @@ public class HandlerGetRequest {
                     users.setType(resultSet.getString("tipe"));
                     data.put(users.toJsonObject());
                 } else if (tableName.equals("addresses")) {
-                    statusCode = 200;
                     Addresses addresses = new Addresses();
                     addresses.setUsers(resultSet.getInt("id"));
                     addresses.setType(resultSet.getString("tipe"));
@@ -107,7 +92,6 @@ public class HandlerGetRequest {
                     addresses.setPostcode(resultSet.getString("postcode"));
                     data.put(addresses.toJsonObject());
                 } else if (tableName.equals("products")) {
-                    statusCode = 200;
                     Products products = new Products();
                     products.setId(resultSet.getInt("id"));
                     products.setSeller(resultSet.getInt("seller"));
@@ -117,7 +101,6 @@ public class HandlerGetRequest {
                     products.setStock(resultSet.getInt("stock"));
                     data.put(products.toJsonObject());
                 } else if (tableName.equals("orders")) {
-                    statusCode = 200;
                     Orders orders = new Orders();
                     orders.setId(resultSet.getInt("id"));
                     orders.setBuyer(resultSet.getInt("buyer"));
@@ -127,7 +110,6 @@ public class HandlerGetRequest {
                     orders.setIsPaid(resultSet.getBoolean("is_paid"));
                     data.put(orders.toJsonObject());
                 } else if (tableName.equals("reviews")) {
-                    statusCode = 200;
                     Reviews reviews = new Reviews();
                     reviews.setReviewId(resultSet.getInt("review_id"));
                     reviews.setStar(resultSet.getInt("star"));
@@ -135,7 +117,6 @@ public class HandlerGetRequest {
                     reviews.setOrderId(resultSet.getInt("order_id"));
                     data.put(reviews.toJsonObject());
                 } else if (tableName.equals("order_details")) {
-                    statusCode = 200;
                     OrderDetails orderDetails = new OrderDetails();
                     orderDetails.setOrderId(resultSet.getInt("order_id"));
                     orderDetails.setProduct(resultSet.getInt("product"));
@@ -155,20 +136,6 @@ public class HandlerGetRequest {
 
         // Mengatur indentasi pada JSON
         response = data.toString(2);
-        return response;        
-    }
-
-    private static boolean isValidTable(String tableName) {
-        // Daftar tabel yang valid
-        String[] validTables = { "users", "products", "orders", "addresses", "order_details", "reviews" };
-
-        // Memeriksa apakah tabel ada dalam daftar tabel yang valid
-        for (String validTable : validTables) {
-            if (validTable.equalsIgnoreCase(tableName)) {
-                return true;
-            }
-        }
-
-        return false;
+        return response;
     }
 }

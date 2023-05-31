@@ -19,11 +19,14 @@ public class HandlerPostRequest {
     private static JSONArray data = new JSONArray();
 
     public static void handlePostRequest(HttpExchange exchange) throws SQLException, IOException {
-        data.clear();
+        // Mendapatkan OutputStream dari ResponseBody pada objek `exchange`
         OutputStream outputStream = exchange.getResponseBody();
         JSONObject jsonObject = new JSONObject();
 
         try {
+            // Menghapus data pada JSONArray untuk menghindari duplikasi data
+            data.clear();
+
             // Mendapatkan path dari permintaan
             path = exchange.getRequestURI().getPath();
 
@@ -32,98 +35,73 @@ public class HandlerPostRequest {
 
             if (pathSegments.length == 2) {
                 tableName = pathSegments[1];
+
+                InputStreamReader isr = new InputStreamReader(exchange.getRequestBody(), "utf-8");
+                BufferedReader br = new BufferedReader(isr);
+                int i;
+                StringBuilder buf = new StringBuilder();
+
+                while ((i = br.read()) != -1) {
+                    buf.append((char) i);
+                }
+
+                br.close();
+                isr.close();
+                String json = buf.toString();
+
+                if (tableName.equals("users")) {
+                    Users user = new Users();
+                    if (user.parseUserJSON(json) != 1) {
+                        user.insertUser();
+                        data.put(Fitur.insertDataSuccess(tableName));
+                    } else {
+                        data.put(Fitur.insertDataError(tableName));
+                    }
+                } else if (tableName.equals("addresses")) {
+                    Addresses addresses = new Addresses();
+                    if (addresses.parseAddressesJSON(json) != 1) {
+                        addresses.insertAddress();
+                        data.put(Fitur.insertDataSuccess(tableName));
+                    } else {
+                        data.put(Fitur.insertDataError(tableName));
+                    }
+                } else if (tableName.equals("products")) {
+                    Products products = new Products();
+                    if (products.parseProductsJSON(json) != 1) {
+                        products.insertProduct();
+                        data.put(Fitur.insertDataSuccess(tableName));
+                    } else {
+                        data.put(Fitur.insertDataError(tableName));
+                    }
+                } else if (tableName.equals("orders")) {
+                    Orders orders = new Orders();
+                    if (orders.parseOrdersJSON(json) != 1) {
+                        orders.insertOrder();
+                        data.put(Fitur.insertDataSuccess(tableName));
+                    } else {
+                        data.put(Fitur.insertDataError(tableName));
+                    }
+                } else if (tableName.equals("order_details")) {
+                    OrderDetails orderDetails = new OrderDetails();
+                    if (orderDetails.parseOrderDetailsJSON(json) != 1) {
+                        orderDetails.insertOrderDetails();
+                        data.put(Fitur.insertDataSuccess(tableName));
+                    } else {
+                        data.put(Fitur.insertDataError(tableName));
+                    }
+                } else if (tableName.equals("reviews")) {
+                    Reviews reviews = new Reviews();
+                    if (reviews.parseReviewsJSON(json) != 1) {
+                        reviews.insertReview();
+                        data.put(Fitur.insertDataSuccess(tableName));
+                    } else {
+                        data.put(Fitur.insertDataError(tableName));
+                    }
+                } else {
+                    data.put(Fitur.unvaliableTable(tableName));
+                }
             } else {
-                jsonObject.put("status_code", 400);
-                jsonObject.put("message",
-                        "Invalid path. Please specify a valid path. Path " + path + " is unavailable for POST method.");
-                data.put(jsonObject);
-            }
-
-            InputStreamReader isr = new InputStreamReader(exchange.getRequestBody(), "utf-8");
-            BufferedReader br = new BufferedReader(isr);
-            int i;
-            StringBuilder buf = new StringBuilder();
-
-            while ((i = br.read()) != -1) {
-                buf.append((char) i);
-            }
-
-            br.close();
-            isr.close();
-            String json = buf.toString();
-
-            if (tableName.equals("users")) {
-                Users user = new Users();
-                if (user.parseUserJSON(json) != 1) {
-                    user.insertUser();
-                    jsonObject.put("status_code", 200);
-                    jsonObject.put("message", "Data " + tableName + " has been successfully inserted.");
-                    data.put(jsonObject);
-                } else {
-                    jsonObject.put("status_code", 400);
-                    jsonObject.put("message", "Invalid data. Please insert a " + tableName + " valid data.");
-                    data.put(jsonObject);
-                }
-            } else if (tableName.equals("addresses")) {
-                Addresses addresses = new Addresses();
-                if (addresses.parseAddressesJSON(json) != 1) {
-                    addresses.insertAddress();
-                    jsonObject.put("status_code", 200);
-                    jsonObject.put("message", "Data " + tableName + " has been successfully inserted.");
-                    data.put(jsonObject);
-                } else {
-                    jsonObject.put("status_code", 400);
-                    jsonObject.put("message", "Invalid data. Please insert a " + tableName + " valid data.");
-                    data.put(jsonObject);
-                }
-            } else if (tableName.equals("products")) {
-                Products products = new Products();
-                if (products.parseProductsJSON(json) != 1) {
-                    products.insertProduct();
-                    jsonObject.put("status_code", 200);
-                    jsonObject.put("message", "Data " + tableName + " has been successfully inserted.");
-                    data.put(jsonObject);
-                } else {
-                    jsonObject.put("status_code", 400);
-                    jsonObject.put("message", "Invalid data. Please insert a " + tableName + " valid data.");
-                    data.put(jsonObject);
-                }
-            } else if (tableName.equals("orders")) {
-                Orders orders = new Orders();
-                if (orders.parseOrdersJSON(json) != 1) {
-                    orders.insertOrder();
-                    jsonObject.put("status_code", 200);
-                    jsonObject.put("message", "Data " + tableName + " has been successfully inserted.");
-                    data.put(jsonObject);
-                } else {
-                    jsonObject.put("status_code", 400);
-                    jsonObject.put("message", "Invalid data. Please insert a " + tableName + " valid data.");
-                    data.put(jsonObject);
-                }
-            } else if (tableName.equals("order_details")) {
-                OrderDetails orderDetails = new OrderDetails();
-                if (orderDetails.parseOrderDetailsJSON(json) != 1) {
-                    orderDetails.insertOrderDetails();
-                    jsonObject.put("status_code", "200");
-                    jsonObject.put("message", "Data " + tableName + " has been successfully inserted.");
-                    data.put(jsonObject);
-                } else {
-                    jsonObject.put("status_code", 400);
-                    jsonObject.put("message", "Invalid data. Please insert a " + tableName + " valid data.");
-                    data.put(jsonObject);
-                }
-            } else if (tableName.equals("reviews")) {
-                Reviews reviews = new Reviews();
-                if (reviews.parseReviewsJSON(json) != 1) {
-                    reviews.insertReview();
-                    jsonObject.put("status_code", 200);
-                    jsonObject.put("message", "Data " + tableName + " has been successfully inserted.");
-                    data.put(jsonObject);
-                } else {
-                    jsonObject.put("status_code", 400);
-                    jsonObject.put("message", "Invalid data. Please insert a " + tableName + " valid data.");
-                    data.put(jsonObject);
-                }
+                data.put(Fitur.invalidPath(exchange));
             }
 
             statusCode = jsonObject.getInt("status_code");

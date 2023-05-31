@@ -10,6 +10,7 @@ import java.sql.*;
  * Kelas ini menyediakan logika untuk memproses permintaan HTTP yang masuk dan
  * menghasilkan respons yang sesuai.
  */
+
 public class MyHandler implements HttpHandler {
     private static String method;
     private static String response = "";
@@ -37,7 +38,7 @@ public class MyHandler implements HttpHandler {
             } else if (method.equalsIgnoreCase("DELETE")) {
                 HandlerDeleteRequest.handleDeleteRequest(exchange);
             } else {
-                statusCode = 405;
+                Fitur.invalidMethod(exchange);
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -2,6 +2,8 @@ import com.sun.net.httpserver.HttpExchange;
 import java.io.IOException;
 import java.sql.*;
 import java.io.OutputStream;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * Class `HandlerDeleteRequest` menangani permintaan HTTP dengan metode DELETE.
@@ -14,54 +16,58 @@ public class HandlerDeleteRequest {
     private static String id;
     private static String[] pathSegments;
     private static int statusCode;
-    private static String response;
+    private static JSONArray data = new JSONArray();
 
     public static void handleDeleteRequest(HttpExchange exchange) throws SQLException, IOException {
-
-        // Mendapatkan path dari permintaan
-        path = exchange.getRequestURI().getPath();
-
-        // Memisahkan path menjadi endpoint dan id
-        pathSegments = path.split("/");
-
         // Mendapatkan OutputStream dari ResponseBody pada objek `exchange`
         OutputStream outputStream = exchange.getResponseBody();
+        JSONObject jsonObject = new JSONObject();
 
-        if (pathSegments.length == 3) {
-            tableName = pathSegments[1];
-            id = pathSegments[2];
-            if (tableName.equalsIgnoreCase("users")) {
-                deleteData(tableName, "users", id);
-            } else if (tableName.equalsIgnoreCase("products")) {
-                deleteData(tableName, "id", id);
-            } else if (tableName.equalsIgnoreCase("reviews")) {
-                deleteData(tableName, "review_id", id);
-            } else if (tableName.equalsIgnoreCase("addresses")) {
-                deleteData(tableName, "id", id);
-            } else if (tableName.equalsIgnoreCase("orders")) {
-                deleteData(tableName, "id", id);
-            } else if (tableName.equals("order_details")) {
-                deleteData(tableName, "order_id", id);
+        try {
+            // Menghapus data pada JSONArray untuk menghindari duplikasi data
+            data.clear();
+
+            // Mendapatkan path dari permintaan
+            path = exchange.getRequestURI().getPath();
+
+            // Memisahkan path menjadi endpoint dan id
+            pathSegments = path.split("/");
+
+            if (pathSegments.length == 3) {
+                tableName = pathSegments[1];
+                id = pathSegments[2];
+                if (tableName.equalsIgnoreCase("users")) {
+                    deleteData(tableName, "users", id);
+                    data.put(Fitur.deleteDataSuccess(tableName, id));
+                } else if (tableName.equalsIgnoreCase("products")) {
+                    deleteData(tableName, "id", id);
+                    data.put(Fitur.deleteDataSuccess(tableName, id));
+                } else if (tableName.equalsIgnoreCase("reviews")) {
+                    deleteData(tableName, "review_id", id);
+                    data.put(Fitur.deleteDataSuccess(tableName, id));
+                } else if (tableName.equalsIgnoreCase("addresses")) {
+                    deleteData(tableName, "id", id);
+                    data.put(Fitur.deleteDataSuccess(tableName, id));
+                } else if (tableName.equalsIgnoreCase("orders")) {
+                    deleteData(tableName, "id", id);
+                    data.put(Fitur.deleteDataSuccess(tableName, id));
+                } else if (tableName.equals("order_details")) {
+                    deleteData(tableName, "order_id", id);
+                    data.put(Fitur.deleteDataSuccess(tableName, id));
+                } else {
+                    data.put(Fitur.unvaliableTable(tableName));
+                }
             } else {
-                response = "Path invalid.";
-                statusCode = 400;
-                exchange.sendResponseHeaders(statusCode, response.length());
-                outputStream.write(response.getBytes());
-                outputStream.flush();
-                outputStream.close();
+                data.put(Fitur.invalidPath(exchange));
             }
-            response = "Delete berhasil";
-            statusCode = 200;
+
+            statusCode = jsonObject.getInt("status_code");
+            String response = data.toString(2);
             exchange.sendResponseHeaders(statusCode, response.length());
             outputStream.write(response.getBytes());
             outputStream.flush();
             outputStream.close();
-        } else {
-            response = "Path not found";
-            statusCode = 400;
-            exchange.sendResponseHeaders(statusCode, response.length());
-            outputStream.write(response.getBytes());
-            outputStream.flush();
+        } finally {
             outputStream.close();
         }
     }
