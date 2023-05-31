@@ -108,8 +108,8 @@ public class Products {
             pstmt.setInt(1, seller);
             pstmt.setString(2, title);
             pstmt.setString(3, description);
-            pstmt.setString(3, price);
-            pstmt.setInt(3, stock);
+            pstmt.setString(4, price);
+            pstmt.setInt(5, stock);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e.getMessage());

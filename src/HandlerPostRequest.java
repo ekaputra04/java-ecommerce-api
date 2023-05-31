@@ -14,6 +14,7 @@ import org.json.JSONObject;
 public class HandlerPostRequest {
     private static String path;
     private static String tableName;
+    private static String response;
     private static String[] pathSegments;
     private static int statusCode;
     private static JSONArray data = new JSONArray();
@@ -53,59 +54,61 @@ public class HandlerPostRequest {
                     Users user = new Users();
                     if (user.parseUserJSON(json) != 1) {
                         user.insertUser();
-                        data.put(Fitur.insertDataSuccess(tableName));
+                        jsonObject = Fitur.insertDataSuccess(tableName);
                     } else {
-                        data.put(Fitur.insertDataError(tableName));
+                        jsonObject = Fitur.insertDataError(tableName);
                     }
                 } else if (tableName.equals("addresses")) {
                     Addresses addresses = new Addresses();
                     if (addresses.parseAddressesJSON(json) != 1) {
                         addresses.insertAddress();
-                        data.put(Fitur.insertDataSuccess(tableName));
+                        jsonObject = Fitur.insertDataSuccess(tableName);
                     } else {
-                        data.put(Fitur.insertDataError(tableName));
+                        jsonObject = Fitur.insertDataError(tableName);
                     }
                 } else if (tableName.equals("products")) {
                     Products products = new Products();
                     if (products.parseProductsJSON(json) != 1) {
                         products.insertProduct();
-                        data.put(Fitur.insertDataSuccess(tableName));
+                        jsonObject = Fitur.insertDataSuccess(tableName);
                     } else {
-                        data.put(Fitur.insertDataError(tableName));
+                        jsonObject = Fitur.insertDataError(tableName);
                     }
                 } else if (tableName.equals("orders")) {
                     Orders orders = new Orders();
                     if (orders.parseOrdersJSON(json) != 1) {
                         orders.insertOrder();
-                        data.put(Fitur.insertDataSuccess(tableName));
+                        jsonObject = Fitur.insertDataSuccess(tableName);
                     } else {
-                        data.put(Fitur.insertDataError(tableName));
+                        jsonObject = Fitur.insertDataError(tableName);
                     }
                 } else if (tableName.equals("order_details")) {
                     OrderDetails orderDetails = new OrderDetails();
                     if (orderDetails.parseOrderDetailsJSON(json) != 1) {
                         orderDetails.insertOrderDetails();
-                        data.put(Fitur.insertDataSuccess(tableName));
+                        jsonObject = Fitur.insertDataSuccess(tableName);
                     } else {
-                        data.put(Fitur.insertDataError(tableName));
+                        jsonObject = Fitur.insertDataError(tableName);
                     }
                 } else if (tableName.equals("reviews")) {
                     Reviews reviews = new Reviews();
                     if (reviews.parseReviewsJSON(json) != 1) {
                         reviews.insertReview();
-                        data.put(Fitur.insertDataSuccess(tableName));
+                        jsonObject = Fitur.insertDataSuccess(tableName);
                     } else {
-                        data.put(Fitur.insertDataError(tableName));
+                        jsonObject = Fitur.insertDataError(tableName);
                     }
                 } else {
-                    data.put(Fitur.unvaliableTable(tableName));
+                    jsonObject = Fitur.unvaliableTable(tableName);
                 }
             } else {
-                data.put(Fitur.invalidPath(exchange));
+                jsonObject = Fitur.invalidPath(exchange);
             }
 
+            data.put(jsonObject);
             statusCode = jsonObject.getInt("status_code");
-            String response = data.toString(2);
+            response = data.toString(2);
+            exchange.getResponseHeaders().set("Content-Type", "application/json");
             exchange.sendResponseHeaders(statusCode, response.getBytes().length);
             outputStream.write(response.getBytes());
             outputStream.flush();

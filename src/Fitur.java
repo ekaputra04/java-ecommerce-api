@@ -3,7 +3,6 @@ import org.json.JSONObject;
 import java.sql.SQLException;
 import java.io.OutputStream;
 import java.io.IOException;
-
 import com.sun.net.httpserver.HttpExchange;
 
 public class Fitur {

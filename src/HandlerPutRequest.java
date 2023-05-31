@@ -56,57 +56,61 @@ public class HandlerPutRequest {
                     Users user = new Users();
                     if (user.parseUserJSON(json) != 1) {
                         user.updateUser(id);
-                        data.put(Fitur.updateDataSuccess(tableName, id));
+                        jsonObject = Fitur.updateDataSuccess(tableName, id);
                     } else {
-                        data.put(Fitur.updateDataError(tableName));
+                        jsonObject = Fitur.updateDataError(tableName);
                     }
                 } else if (tableName.equals("addresses")) {
                     Addresses addresses = new Addresses();
                     if (addresses.parseAddressesJSON(json) != 1) {
                         addresses.updateAddress(id);
-                        data.put(Fitur.updateDataSuccess(tableName, id));
+                        jsonObject = Fitur.updateDataSuccess(tableName, id);
                     } else {
-                        data.put(Fitur.updateDataError(tableName));
+                        jsonObject = Fitur.updateDataError(tableName);
                     }
                 } else if (tableName.equals("products")) {
                     Products products = new Products();
                     if (products.parseProductsJSON(json) != 1) {
                         products.updateProduct(id);
-                        data.put(Fitur.updateDataSuccess(tableName, id));
+                        jsonObject = Fitur.updateDataSuccess(tableName, id);
                     } else {
-                        data.put(Fitur.updateDataError(tableName));
+                        jsonObject = Fitur.updateDataError(tableName);
                     }
                 } else if (tableName.equals("orders")) {
                     Orders orders = new Orders();
                     if (orders.parseOrdersJSON(json) != 1) {
                         orders.updateOrder(id);
-                        data.put(Fitur.updateDataSuccess(tableName, id));
+                        jsonObject = Fitur.updateDataSuccess(tableName, id);
                     } else {
-                        data.put(Fitur.updateDataError(tableName));
+                        jsonObject = Fitur.updateDataError(tableName);
                     }
                 } else if (tableName.equals("order_details")) {
                     OrderDetails orderDetails = new OrderDetails();
                     if (orderDetails.parseOrderDetailsJSON(json) != 1) {
                         orderDetails.updateOrderDetails(id);
-                        data.put(Fitur.updateDataSuccess(tableName, id));
+                        jsonObject = Fitur.updateDataSuccess(tableName, id);
                     } else {
-                        data.put(Fitur.updateDataError(tableName));
+                        jsonObject = Fitur.updateDataError(tableName);
                     }
                 } else if (tableName.equals("reviews")) {
                     Reviews reviews = new Reviews();
                     if (reviews.parseReviewsJSON(json) != 1) {
                         reviews.updateReview(id);
-                        data.put(Fitur.updateDataSuccess(tableName, id));
+                        jsonObject = Fitur.updateDataSuccess(tableName, id);
                     } else {
-                        data.put(Fitur.updateDataError(tableName));
+                        jsonObject = Fitur.updateDataError(tableName);
                     }
+                } else {
+                    jsonObject = Fitur.unvaliableTable(tableName);
                 }
             } else {
-                data.put(Fitur.invalidPath(exchange));
+                jsonObject = Fitur.invalidPath(exchange);
             }
 
+            data.put(jsonObject);
             statusCode = jsonObject.getInt("status_code");
             response = data.toString(2);
+            exchange.getResponseHeaders().set("Content-Type", "application/json");
             exchange.sendResponseHeaders(statusCode, response.length());
             outputStream.write(response.getBytes());
             outputStream.flush();

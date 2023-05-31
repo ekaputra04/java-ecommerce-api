@@ -1,6 +1,7 @@
 import com.sun.net.httpserver.HttpExchange;
 import java.sql.*;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * Class `HandlerGetRequest` menangani permintaan HTTP dengan metode GET.
@@ -59,7 +60,7 @@ public class HandlerGetRequest {
                 }
             } else {
                 // Jika tidak ada nama tabel, kembalikan respon error
-                data.put(Fitur.unvaliableTable(tableName));
+                data.put(Fitur.invalidPath(exchange));
             }
 
             // Memeriksa apakah tabel valid
@@ -123,6 +124,8 @@ public class HandlerGetRequest {
                     orderDetails.setQuantity(resultSet.getInt("quantity"));
                     orderDetails.setPrice(resultSet.getInt("price"));
                     data.put(orderDetails.toJsonObject());
+                } else {
+                    data.put(Fitur.unvaliableTable(tableName));
                 }
             }
 

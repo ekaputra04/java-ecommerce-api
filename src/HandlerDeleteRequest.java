@@ -14,6 +14,7 @@ public class HandlerDeleteRequest {
     private static String path;
     private static String tableName;
     private static String id;
+    private static String response;
     private static String[] pathSegments;
     private static int statusCode;
     private static JSONArray data = new JSONArray();
@@ -38,32 +39,34 @@ public class HandlerDeleteRequest {
                 id = pathSegments[2];
                 if (tableName.equalsIgnoreCase("users")) {
                     deleteData(tableName, "users", id);
-                    data.put(Fitur.deleteDataSuccess(tableName, id));
+                    jsonObject = Fitur.deleteDataSuccess(tableName, id);
                 } else if (tableName.equalsIgnoreCase("products")) {
                     deleteData(tableName, "id", id);
-                    data.put(Fitur.deleteDataSuccess(tableName, id));
+                    jsonObject = Fitur.deleteDataSuccess(tableName, id);
                 } else if (tableName.equalsIgnoreCase("reviews")) {
                     deleteData(tableName, "review_id", id);
-                    data.put(Fitur.deleteDataSuccess(tableName, id));
+                    jsonObject = Fitur.deleteDataSuccess(tableName, id);
                 } else if (tableName.equalsIgnoreCase("addresses")) {
                     deleteData(tableName, "id", id);
-                    data.put(Fitur.deleteDataSuccess(tableName, id));
+                    jsonObject = Fitur.deleteDataSuccess(tableName, id);
                 } else if (tableName.equalsIgnoreCase("orders")) {
                     deleteData(tableName, "id", id);
-                    data.put(Fitur.deleteDataSuccess(tableName, id));
+                    jsonObject = Fitur.deleteDataSuccess(tableName, id);
                 } else if (tableName.equals("order_details")) {
                     deleteData(tableName, "order_id", id);
-                    data.put(Fitur.deleteDataSuccess(tableName, id));
+                    jsonObject = Fitur.deleteDataSuccess(tableName, id);
                 } else {
-                    data.put(Fitur.unvaliableTable(tableName));
+                    jsonObject = Fitur.unvaliableTable(tableName);
                 }
             } else {
-                data.put(Fitur.invalidPath(exchange));
+                jsonObject = Fitur.invalidPath(exchange);
             }
 
+            data.put(jsonObject);
             statusCode = jsonObject.getInt("status_code");
-            String response = data.toString(2);
-            exchange.sendResponseHeaders(statusCode, response.length());
+            response = data.toString(2);
+            exchange.getResponseHeaders().set("Content-Type", "application/json");
+            exchange.sendResponseHeaders(statusCode, response.getBytes().length);
             outputStream.write(response.getBytes());
             outputStream.flush();
             outputStream.close();
