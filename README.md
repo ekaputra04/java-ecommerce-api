@@ -558,21 +558,67 @@ Proses update berhasil ditandai dengan munculnya message success
 
 ### DELETE <a name="delete"></a>
 
-Perintah DELETE bertujuan untuk menghapus data dari tabel, baik semua data maupun data dengan kondisi tertentu
+Perintah DELETE bertujuan untuk menghapus data dari tabel
 
 #### DELETE table users
 
+-   **`DELETE localhost:8087/users/23`**
 
+<p align = "center">
+<img src = "./img/61.png" alt="deskripsi_gambar" style="width: 500px; height: auto">
+</br>
+Proses delete users dengan id = 23 berhasil ditandai dengan munculnya message success
+</p>
 
 #### DELETE table addresses
 
+-   **`DELETE localhost:8087/addresses/12`**
+
+<p align = "center">
+<img src = "./img/62.png" alt="deskripsi_gambar" style="width: 500px; height: auto">
+</br>
+Proses delete addresses dengan id = 12 berhasil ditandai dengan munculnya message success
+</p>
+
 #### DELETE table products
+
+-   **`DELETE localhost:8087/products/21`**
+
+<p align = "center">
+<img src = "./img/63.png" alt="deskripsi_gambar" style="width: 500px; height: auto">
+</br>
+Proses delete products dengan id = 21 berhasil ditandai dengan munculnya message success
+</p>
 
 #### DELETE table orders
 
+-   **`DELETE localhost:8087/orders/11`**
+
+<p align = "center">
+<img src = "./img/64.png" alt="deskripsi_gambar" style="width: 500px; height: auto">
+</br>
+Proses delete orders dengan id = 11 berhasil ditandai dengan munculnya message success
+</p>
+
 #### DELETE table order_details
 
+-   **`DELETE localhost:8087/order_details/11`**
+
+<p align = "center">
+<img src = "./img/65.png" alt="deskripsi_gambar" style="width: 500px; height: auto">
+</br>
+Proses delete order_details dengan id = 11 berhasil ditandai dengan munculnya message success
+</p>
+
 #### DELETE table reviews
+
+-   **`DELETE localhost:8087/reviews/11`**
+
+<p align = "center">
+<img src = "./img/61.png" alt="deskripsi_gambar" style="width: 500px; height: auto">
+</br>
+Proses delete reviews dengan id = 11 berhasil ditandai dengan munculnya message success
+</p>
 
 ### Error Condition <a name="error"></a>
 
@@ -598,7 +644,7 @@ Error message ketika menggunakan method OPTIONS
 
 #### Validasi table name
 
--   **`GET localhost:8087/{invalid-table-name}`**
+-   **`METHOD localhost:8087/{invalid-table-name}`**
 
 <p align = "center">
 <img src = "./img/3.png" alt="deskripsi_gambar" style="width: 500px; height: auto">
@@ -606,12 +652,40 @@ Error message ketika menggunakan method OPTIONS
 Error message ketika menggunakan nama tabel yang tidak tersedia
 </p>
 
--   **`POST || PUT || DELETE localhost:8087/{invalid-path}`**
+-   **`POST || PUT localhost:8087/{valid-path} with invalid data`**
 
-    -   Misalkan **`POST localhost:8087/user`**
+    -   Misalkan **`POST localhost:8087/users`**
 
 <p align = "center">
-<img src = "./img/46.png" alt="deskripsi_gambar" style="width: 500px; height: auto">
+<img src = "./img/67.png" alt="deskripsi_gambar" style="width: 500px; height: auto">
 </br>
-Error message ketika menggunakan nama tabel yang tidak valid
+Error message ketika memasukkan data yang tidak valid, dalam kasus di atas tidak kolom tipe tidak dimasukkan
 </p>
+
+-   Misalkan **`PUT localhost:8087/users/12`**
+
+<p align = "center">
+<img src = "./img/68.png" alt="deskripsi_gambar" style="width: 500px; height: auto">
+</br>
+Error message ketika memasukkan data yang tidak valid, dalam kasus di atas tidak kolom tipe tidak dimasukkan
+</p>
+
+-   **` PUT || DELETE localhost:8087/{invalid-path}`**
+
+    -   Misalkan **`PUT localhost:8087/users`**
+
+<p align = "center">
+<img src = "./img/69.png" alt="deskripsi_gambar" style="width: 500px; height: auto">
+</br>
+Error message ketika menggunakan path yang salah pada method PUT, seharusnya /{table-name}/{id}
+</p>
+
+-   Misalkan **`DELETE localhost:8087/users`**
+
+<p align = "center">
+<img src = "./img/70.png" alt="deskripsi_gambar" style="width: 500px; height: auto">
+</br>
+Error message ketika menggunakan path yang salah pada method DELETE, seharusnya /{table-name}/{id}
+</p>
+
+## Sekian dan Terima Kasih
