@@ -10,6 +10,7 @@
 - [Identitas](#identitas)
 - [Folder Structure](#folder)
 - [Library and Module](#library) 
+- [API Key](#api-key)
 - [Spesifikasi API](#spesifikasi) 
     - [GET Method](#get)
     - [POST Method](#post)
@@ -46,11 +47,47 @@ Projek ini terdiri dari beberapa folder sebagai berikut
 
 ## Library and Module <a name="library"></a>
 
-`Java E-Commerce API` ini dibangun menggunakan beberapa library modul di antaranya [jackson-databind](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind), [json](https://mvnrepository.com/artifact/org.json/json), dan [sqlite](https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc), 
+`Java E-Commerce API` ini dibangun menggunakan beberapa library modul di antaranya [jackson-databind](https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind), [json](https://mvnrepository.com/artifact/org.json/json), dan [sqlite](https://mvnrepository.com/artifact/org.xerial/sqlite-jdbc).
+
+## API Key <a name="api-key"></a>
+
+Sebelum menggunakan API ini, user harus memasukkan API key dan value yang sesuai dengan data pada file .env seperti berikut.
+
+```
+Key : API-KEY
+
+Value : java-ecommerce-api-2205551087
+```
+
+User perlu memasukkan key dan value yang benar dalam bagian Authorization
+
+- Apabila key yang dimasukkan salah akan muncul pesan error seperti berikut
+
+<p align = "center">
+<img src = "./img/71.png" alt="deskripsi_gambar" style="width: 500px; height: auto">
+</br>
+Pesan error ketika memasukkan key yang salah
+</p>
+
+- Apabila value yang dimasukkan salah akan muncul pesan error seperti berikut
+
+<p align = "center">
+<img src = "./img/72.png" alt="deskripsi_gambar" style="width: 500px; height: auto">
+</br>
+Pesan error ketika memasukkan value yang salah
+</p>
+
+- Apabila key dan value benar maka akan menjalankan perintah yang diinginkan
+
+<p align = "center">
+<img src = "./img/73.png" alt="deskripsi_gambar" style="width: 500px; height: auto">
+</br>
+Key dan value benar, maka sistem dapat melakukan apa yang diperintahkan, dalam kasus di atas menampilkan semua daftar users
+</p>
 
 ## Spesifikasi API <a name="spesifikasi"></a>
 
-API ini dapat menjalankan 4 perintah, di antaranya:
+API ini dapat menjalankan 4 perintah, di antaranya sabagai berikut:
 
 ### GET <a name="get"></a>
 
@@ -58,15 +95,15 @@ Perintah GET bertujuan untuk mengambil data dari tabel, baik semua data maupun d
 
 -   **`GET localhost:8087/{table}`**
 
-Path untuk GET melihat semua data dalam tabel **`table`**
+Path untuk melihat semua data dalam tabel **`table`**
 
 -   **`GET localhost:8087/{table}/{id}`**
 
-Path untuk GET melihat semua data dalam tabel **`table`** dengan id **`id`**
+Path untuk melihat semua data dalam tabel **`table`** dengan id **`id`**
 
 -   **`GET localhost:8087/{table}?{query}`**
 
-Path untuk GET melihat semua data dalam tabel **`table`** dengan kondisi pada **`query`**
+Path untuk melihat semua data dalam tabel **`table`** dengan kondisi pada **`query`**
 
 #### GET table users
 
@@ -420,6 +457,10 @@ Menampilkan data reviews dengan deskripsi tertentu
 
 Perintah POST bertujuan untuk menyimpan data ke dalam tabel
 
+-   **`POST localhost:8087/{table}`**
+
+Path untuk method POST untuk memasukkan data dalam tabel **`table`**
+
 #### POST table users
 
 -   **`POST localhost:8087/users`**
@@ -483,6 +524,10 @@ Berhasil menyimpan data ke dalam tabel reviews, id tidak perlu diinputkan secara
 ### PUT <a name="put"></a>
 
 Perintah PUT bertujuan untuk memodifikasi data dalam tabel
+
+-   **`PUT localhost:8087/{table}/{id}`**
+
+Path untuk method PUT untuk mengupdate data dalam tabel **`table`** dengan id **`id`**
 
 #### PUT table users
 
@@ -559,6 +604,10 @@ Proses update berhasil ditandai dengan munculnya message success
 ### DELETE <a name="delete"></a>
 
 Perintah DELETE bertujuan untuk menghapus data dari tabel
+
+-   **`DELETE localhost:8087/{table}/{id}`**
+
+Path untuk method DELETE untuk menghapus data dalam tabel **`table`** dengan id **`id`**
 
 #### DELETE table users
 

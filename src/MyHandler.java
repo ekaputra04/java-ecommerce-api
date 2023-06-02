@@ -1,7 +1,6 @@
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.sql.*;
 
 /**
@@ -22,23 +21,26 @@ public class MyHandler implements HttpHandler {
             // Mendapatkan method dari permintaan
             method = exchange.getRequestMethod();
 
-            // Melakukan pengecekan kondisi berdasarkan method request
-            if (method.equalsIgnoreCase("GET")) {
-                response = HandlerGetRequest.handleGetRequest(exchange);
-                exchange.getResponseHeaders().set("Content-Type", "application/json");
-                exchange.sendResponseHeaders(statusCode, response.getBytes().length);
-                OutputStream outputStream = exchange.getResponseBody();
-                outputStream.write(response.getBytes());
-                outputStream.flush();
-                outputStream.close();
-            } else if (method.equalsIgnoreCase("POST")) {
-                HandlerPostRequest.handlePostRequest(exchange);
-            } else if (method.equalsIgnoreCase("PUT")) {
-                HandlerPutRequest.handlePutRequest(exchange);
-            } else if (method.equalsIgnoreCase("DELETE")) {
-                HandlerDeleteRequest.handleDeleteRequest(exchange);
+            // Validasi API Key
+            if (!APIKeyProvider.apiAuthorization(exchange)) {
+                Fitur.invalidAPIKey(exchange);
+                System.out.println("API KEY is unvaliable");
+            } else if (APIKeyProvider.apiAuthorization(exchange)) {
+                // Melakukan pengecekan kondisi berdasarkan method request
+                if (method.equalsIgnoreCase("GET")) {
+                    response = HandlerGetRequest.handleGetRequest(exchange);
+                    Fitur.response(exchange, statusCode, response);
+                } else if (method.equalsIgnoreCase("POST")) {
+                    HandlerPostRequest.handlePostRequest(exchange);
+                } else if (method.equalsIgnoreCase("PUT")) {
+                    HandlerPutRequest.handlePutRequest(exchange);
+                } else if (method.equalsIgnoreCase("DELETE")) {
+                    HandlerDeleteRequest.handleDeleteRequest(exchange);
+                } else {
+                    Fitur.invalidMethod(exchange);
+                }
             } else {
-                Fitur.invalidMethod(exchange);
+
             }
         } catch (SQLException e) {
             e.printStackTrace();

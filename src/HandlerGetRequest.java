@@ -1,7 +1,6 @@
 import com.sun.net.httpserver.HttpExchange;
 import java.sql.*;
 import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * Class `HandlerGetRequest` menangani permintaan HTTP dengan metode GET.
